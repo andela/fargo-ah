@@ -1,6 +1,8 @@
 Authors Haven - A Social platform for the creative at heart.
 =======
 [![Build Status](https://travis-ci.org/andela/fargo-ah.svg?branch=develop)](https://travis-ci.org/andela/fargo-ah)
+[![protected_by hound](https://img.shields.io/badge/protected_by-hound-b764b2.svg)](https://houndci.com/repos)
+
 ## Vision
 Create a community of like minded authors to foster inspiration and innovation
 by leveraging the modern web.
