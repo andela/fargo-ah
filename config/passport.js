@@ -1,25 +1,31 @@
-const passport = require('passport');
-const bcrypt = require('bcrypt');
-const LocalStrategy = require('passport-local').Strategy;
-const { User } = require('./../models');
+import passport from 'passport';
+import bcrypt from 'bcrypt';
+import local from 'passport-local';
+import db from '../models';
+
+const LocalStrategy = local.Strategy;
 
 passport.use(new LocalStrategy(
   {
     usernameField: 'user[email]',
     passwordField: 'user[password]'
   },
-  function (email, password, done) {
-    User.findOne({ where: { email }})
-      .then(function (user) {
-        bcrypt.compare(password, user.hashedPassword, function (err, res) {
-          if (!user || !res || err) {
-            return done(null, false, {
-              errors: { 'email or password': 'is invalid' }
-            });
+  ((email, password, done) => {
+    db.User.findOne({ where: { email } })
+      .then((user) => {
+        bcrypt.compare(
+          password,
+          user.hashedPassword,
+          (err, res) => {
+            if (!user || !res || err) {
+              return done(null, false, {
+                errors: { 'email or password': 'is invalid' }
+              });
+            }
+            return done(null, user);
           }
-          return done(null, user);
-        });
+        );
       })
       .catch(done);
-  }
+  })
 ));
