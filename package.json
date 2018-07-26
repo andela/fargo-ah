@@ -4,7 +4,8 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test&& nyc mocha tests/**/*.test.js  --compilers js:babel-register --require babel-polyfill --exit",
+    "test": "NODE_ENV=test nyc mocha tests/**/*.test.js  --compilers js:babel-register --require babel-polyfill --exit",
+    "pretest": "NODE_ENV=test npm run migrate:undo && NODE_ENV=test npm run migrate",
     "prestart": "babel ./ -d dist --presets=env --ignore node_modules",
     "start": "node ./dist/index.js",
     "dev": "DEBUG=index nodemon --exec babel-node --presets babel-preset-env ./index.js",
