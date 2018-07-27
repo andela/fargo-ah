@@ -1,28 +1,33 @@
-const path = require('path'),
-  express = require('express'),
-  bodyParser = require('body-parser'),
-  session = require('express-session'),
-  cors = require('cors'),
-  errorhandler = require('errorhandler'),
-  debug = require('debug')('index'),
-  dotenv = require('dotenv');
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import cors from 'cors';
+import errorhandler from 'errorhandler';
+import methodOverride from 'method-override';
+import morgan from 'morgan';
+import debugLog from 'debug';
+
+import { } from 'dotenv/config';
+
+import routes from './routes';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-dotenv.config();
+const debug = debugLog('index');
 
 // Create global app object
 const app = express();
 
 app.use(cors());
 
-// Normal express config defaults
-app.use(require('morgan')('dev'));
+// Normal express config defaults;
+app.use(morgan('dev'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(require('method-override')());
+app.use(methodOverride());
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -40,10 +45,10 @@ if (!isProduction) {
 }
 
 
-app.use(require('./routes'));
+app.use(routes);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -54,7 +59,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (!isProduction) {
-  app.use(function (err, req, res) {
+  app.use((err, req, res) => {
     debug(err.stack);
     res.status(err.status || 500);
     res.json({
@@ -68,7 +73,7 @@ if (!isProduction) {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res) {
+app.use((err, req, res) => {
   res.status(err.status || 500);
   res.json({
     errors: {
@@ -79,8 +84,8 @@ app.use(function (err, req, res) {
 });
 
 // finally, let's start our server...
-const server = app.listen(process.env.PORT || 3000, function () {
-  debug('Listening on port ' + server.address().port);
+const server = app.listen(process.env.PORT || 3000, () => {
+  debug(`Listening on port ${server.address().port}`);
 });
 
 export default app;
