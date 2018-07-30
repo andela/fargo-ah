@@ -11,7 +11,6 @@ import { checkCount, articleExists } from '../../middlewares/checkUser';
 
 const router = Router();
 
-
 router.post('/articles', verifyToken, validateArticle, validatePrice, ArticleControllers.createArticle);
 
 router.put('/articles/:slug', validateArticle, validatePrice, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);

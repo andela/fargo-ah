@@ -14,5 +14,6 @@ router.use('/users/login', authRoute);
 router.use('/', articlesRoute);
 router.use('/', comments);
 router.use('/users/login', authRoute);
+router.use('/', articlesRoute);
 
 export default router;

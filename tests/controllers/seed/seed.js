@@ -1,7 +1,7 @@
 const validUser = {
   user: {
     email: 'olumide@yahoo.com',
-    username: 'Lumexata',
+    username: 'Lumexat',
     password: 'spirit2018',
   }
 };

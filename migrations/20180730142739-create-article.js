@@ -23,7 +23,7 @@ module.exports = {
       defaultValue: '0'
     },
     tagList: {
-      type: Sequelize.ARRAY(Sequelize.STRING)
+      type: Sequelize.ARRAY(Sequelize.TEXT)
     },
     favorited: {
       type: Sequelize.BOOLEAN
