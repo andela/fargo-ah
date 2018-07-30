@@ -9,8 +9,8 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
 import expressValidator from 'express-validator';
-import { } from 'dotenv/config';
 
+import { } from 'dotenv/config';
 import passportConfig from './config/passport';
 import routes from './routes';
 

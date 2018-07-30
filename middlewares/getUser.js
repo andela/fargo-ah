@@ -1,7 +1,8 @@
 import db from '../models';
 
+const { User } = db;
 const getUser = (req, res, next) => {
-  db.User.findById(req.userId)
+  User.findById(req.userId)
     .then((user) => {
       if (!user || user.rowCount === 0) {
         return res.status(404).json({
@@ -13,6 +14,7 @@ const getUser = (req, res, next) => {
       }
       req.userObject = user;
       next();
+      return null;
     })
     .catch(next);
 };

@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import winston from 'winston';
 import mailtemplate from './mailtemplate';
 
 exports.sendEmail = async (userToBeVerified) => {
@@ -33,6 +32,6 @@ exports.sendEmail = async (userToBeVerified) => {
       }
     });
     // setup email data with unicode symbols
-    transporter.sendMail(mailOptions).then(result => winston.info(result));
+    transporter.sendMail(mailOptions);
   });
 };
