@@ -1,12 +1,14 @@
-const router = require('express').Router();
-const passport = require('passport');
-const bcrypt = require('bcrypt');
-const { User } = require('../../models');
-require('../../config/passport');
+import { Router } from 'express';
+import passport from 'passport';
+import bcrypt from 'bcrypt';
 
-router.get('/user/', function (req, res, next) {
+import { User } from '../../models';
+
+const router = Router();
+
+router.get('/user/', (req, res, next) => {
   User.findById(req.payload.id)
-    .then(function (user) {
+    .then((user) => {
       if (!user) {
         return res.sendStatus(401);
       }
@@ -15,7 +17,7 @@ router.get('/user/', function (req, res, next) {
     .catch(next);
 });
 
-router.put('/user', function (req, res, next) {
+router.put('/user', (req, res, next) => {
   const user = {};
   if (typeof req.body.user.username !== 'undefined') {
     user.username = req.body.user.username;
@@ -39,7 +41,7 @@ router.put('/user', function (req, res, next) {
     image: user.image,
     hashedPassword: user.password,
     bio: user.bio
-  }, { where: { id: req.payload.id } }).then(function (updatedUser) {
+  }, { where: { id: req.payload.id } }).then((updatedUser) => {
     if (updatedUser[0] === 0) {
       return res.sendStatus(401);
     }
@@ -47,7 +49,7 @@ router.put('/user', function (req, res, next) {
   }).catch(next);
 });
 
-router.post('/users/login', function (req, res, next) {
+router.post('/users/login', (req, res, next) => {
   if (!req.body.user.email) {
     return res.status(422).json({ errors: { email: "can't be blank" } });
   }
@@ -57,7 +59,7 @@ router.post('/users/login', function (req, res, next) {
   }
   passport.authenticate('local',
     { session: false },
-    function (err, user, info) {
+    (err, user, info) => {
       if (err) {
         return next(err);
       }
@@ -87,4 +89,4 @@ router.post('/users', (req, res, next) => {
   });
 });
 
-module.exports = router;
+export default router;

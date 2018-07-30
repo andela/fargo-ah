@@ -26,11 +26,5 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
   }, {});
-  User.prototype.toAuthJSON = function () {
-    return {
-      username: this.username,
-      email: this.email
-    };
-  };
   return User;
 };
