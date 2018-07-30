@@ -7,8 +7,8 @@ import errorhandler from 'errorhandler';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
-
-import { } from 'dotenv/config';
+import cloudinary from 'cloudinary';
+import config from './config';
 
 import routes from './routes';
 
@@ -18,6 +18,13 @@ const debug = debugLog('index');
 
 // Create global app object
 const app = express();
+
+/** configure cloudinary to be able to upload image */
+cloudinary.config({
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
+});
 
 app.use(cors());
 

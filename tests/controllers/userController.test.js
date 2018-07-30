@@ -178,6 +178,28 @@ describe('Tests for user controller', () => {
           done();
         });
     });
+describe('Tests for user registration and log in', () => {
+  const payload = {
+    user: {
+      username: 'jakejake',
+      email: 'jake@jake.jak',
+      password: 'jakejake12',
+    }
+  };
+  it('Should be able to register a user and return a JWT token', (done) => {
+    chai.request(app)
+      .post('/api/users')
+      .send(payload)
+      .end((err, res) => {
+        expect(err).to.equal(null);
+        expect(res.statusCode).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.success).to.equal(true);
+        expect(res.body.user).to.be.an('object');
+        expect(res.body.user.token).to.not.equal(null);
+        done();
+      });
+  });
 
     it('should not create a new user if password is not up to 8 characters', (done) => {
       chai.request(app)
