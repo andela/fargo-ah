@@ -16,14 +16,22 @@ module.exports = {
       type: Sequelize.STRING
     },
     body: {
+<<<<<<< HEAD
       type: Sequelize.TEXT
+=======
+      type: Sequelize.STRING
+>>>>>>> ft(create-article): create user article
     },
     updatedCount: {
       type: Sequelize.INTEGER,
       defaultValue: '0'
     },
     tagList: {
+<<<<<<< HEAD
       type: Sequelize.ARRAY(Sequelize.STRING)
+=======
+      type: Sequelize.ARRAY(Sequelize.TEXT)
+>>>>>>> ft(create-article): create user article
     },
     favorited: {
       type: Sequelize.BOOLEAN

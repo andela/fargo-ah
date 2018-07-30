@@ -90,7 +90,7 @@ class ArticleController {
     let offset = null;
 
     if (page || limit) {
-      // calculate offset
+    // calculate offset
       offset = limit * (page - 1);
     }
 
@@ -105,9 +105,9 @@ class ArticleController {
       })
       .then((articles) => {
         if (articles.length === 0) {
-        /** check if there was no article created
-         *  for the page query
-        */
+          /** check if there was no article created
+       *  for the page query
+      */
           const message = page ? 'articles limit exceeded'
             : 'Sorry, no articles created';
           return res.status(200).json({

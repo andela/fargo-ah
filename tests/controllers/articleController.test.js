@@ -21,7 +21,15 @@ describe('Articles API endpoints', () => {
       .get('/api/articles')
       .end((err, res) => {
         expect(res).to.have.status(200);
+<<<<<<< HEAD
         expect(res.body).to.be.an('object').to.have.property('message').to.equal('Sorry, no articles created');
+=======
+<<<<<<< HEAD
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No articles created');
+=======
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('Your request was successful but no articles created');
+>>>>>>> ft(create-article): create user article
+>>>>>>> ft(create-article): create user article
         expect(res.body).to.have.property('articles').to.be.an('array').with.lengthOf(0);
         done();
       });
@@ -111,6 +119,7 @@ describe('Articles API endpoints', () => {
       });
   });
 
+<<<<<<< HEAD
   it('Should not create article with missing title field for authenticated user', (done) => {
     chai.request(app)
       .post('/api/articles')
@@ -141,6 +150,8 @@ describe('Articles API endpoints', () => {
       });
   });
 
+=======
+>>>>>>> ft(create-article): create user article
   it('Should not create article with missing body field for authenticated user', (done) => {
     chai.request(app)
       .post('/api/articles')
@@ -333,9 +344,14 @@ describe('Articles API endpoints', () => {
       .set('authorization', `Bearer ${validToken}`)
       .send(editedArticle)
       .end((err, res) => {
+<<<<<<< HEAD
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body.message).to.equal('Article successfully deleted');
+=======
+        expect(res).to.have.status(204);
+        expect(res.body).to.be.an('object');
+>>>>>>> ft(create-article): create user article
         done();
       });
   });
