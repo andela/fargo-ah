@@ -13,11 +13,8 @@ const router = Router();
 
 
 router.post('/articles', verifyToken, validateArticle, ArticleControllers.createArticle);
-
 router.put('/articles/:slug', validateArticle, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);
-
-router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.deleteArticle);
-
+router.delete('/articles/:slug', verifyToken, articleExists, validateArticle, ArticleControllers.deleteArticle);
 router.get('/articles/:slug', ArticleControllers.getArticle);
 
 router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);

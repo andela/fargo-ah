@@ -7,6 +7,7 @@ import articlesRoute from './articleRoutes';
 const router = Router();
 
 router.use('/', users);
+router.use('/', articlesRoute);
 router.use('/users/login', authRoute);
 router.use('/', articlesRoute);
 
