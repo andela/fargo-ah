@@ -142,7 +142,7 @@ export default class Utilities {
   }
 
   /**
-   * @function increaseCount
+  * @function increaseCount
   * @summary: A funtion to increase count
   * each time an article is updated
   * @param {Integer} count: input param
