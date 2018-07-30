@@ -143,12 +143,18 @@ export default class Utilities {
 
   /**
   * @function increaseCount
-  * @summary: A funtion to increase count
-  * each time an article is updated
-  * @param {Integer} count: input param
-  * @returns {Integer} number of count: for updating articles
+  * @summary: API controller to handle requests
+  * to delete an article
+  * @param {Integer} num: input param
+  * @returns {object} api response: article object for
+  * successful requests, or error object for
+  * requests that fail
   */
-  static increaseCount(count) {
-    if (Number.isInteger(count)) return count + 1;
+  static increaseCount(num) {
+    if (Number.isInteger(num)) {
+      let updateCount = num;
+      updateCount += 1;
+      return updateCount;
+    }
   }
 }
