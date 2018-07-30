@@ -16,7 +16,7 @@ module.exports = {
       type: Sequelize.STRING
     },
     body: {
-      type: Sequelize.TEXT
+      type: Sequelize.STRING
     },
     updatedCount: {
       type: Sequelize.INTEGER,

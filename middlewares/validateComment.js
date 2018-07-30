@@ -1,16 +1,11 @@
 const validateComment = (req, res, next) => {
-  const { body, commentId } = req.body.comment;
+  const { body } = req.body.comment;
   const errors = [];
   if (!body) {
     errors.push('Comment can not be empty');
   }
   if (typeof body !== 'string') {
     errors.push('Comment must be a string');
-  }
-  if (commentId) {
-    if (typeof commentId !== 'number') {
-      errors.push('parentId must be a number');
-    }
   }
   if (errors.length !== 0) {
     return res.status(403).json({

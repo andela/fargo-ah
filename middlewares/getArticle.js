@@ -1,8 +1,22 @@
 import db from '../models';
 
-const { Article } = db;
+const { Article, Like, User } = db;
 const getArticle = (req, res, next) => {
-  Article.findOne({ where: { slug: req.params.slug } })
+  Article.findOne({
+    include: [{
+      model: Like,
+      as: 'likes',
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['id', 'hashedPassword', 'createdAt', 'updatedAt'] }
+      }],
+    }],
+    attributes: { exclude: ['userId'] },
+    where: {
+      slug: req.params.slug
+    }
+  })
     .then((article) => {
       if (!article) {
         return res.status(404).json({

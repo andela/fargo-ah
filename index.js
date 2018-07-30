@@ -1,3 +1,4 @@
+import expressValidator from 'express-validator';
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -8,9 +9,9 @@ import errorhandler from 'errorhandler';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
-import expressValidator from 'express-validator';
 import { } from 'dotenv/config';
 import passportConfig from './config/passport';
+
 import routes from './routes';
 
 const isProduction = process.env.NODE_ENV === 'production';

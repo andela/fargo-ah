@@ -30,7 +30,6 @@ router.put(
   UsersController.editProfile
 );
 router.post('/users', validateSignup, UsersController.registerUser);
-router.post('/users/login', UsersController.login);
 router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
 router.put('/users/password/reset/edit', inputValidator.validatePassword, validateToken, utils.resetPassword);
 

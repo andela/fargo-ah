@@ -24,31 +24,28 @@ export default class UsersController {
       }
       User.find({
         where: {
-          [Op.or]: [{ email }, { username }]
+          [Op.or]: [{ email }, { username }],
+        },
+      }).then((user) => {
+        if (!user) {
+          User.create({
+            email,
+            username,
+            hashedPassword: hash,
+          }).then((registeredUser) => {
+            const token = utils.signToken({ id: registeredUser.id });
+            sendVerificationEmail.sendEmail(registeredUser);
+            res.status(200).json(utils.userToJson(registeredUser, token));
+          }).catch(next);
+        } else {
+          res.status(409).json({
+            success: false,
+            errors: {
+              body: ['Username or email already exists'],
+            }
+          });
         }
       })
-        .then((user) => {
-          if (!user) {
-            User.create({
-              email,
-              username,
-              hashedPassword: hash
-            })
-              .then((registeredUser) => {
-                const token = utils.signToken({ id: registeredUser.id });
-                sendVerificationEmail.sendEmail(registeredUser);
-                res.status(200).json(utils.userToJson(registeredUser, token));
-              })
-              .catch(next);
-          } else {
-            res.status(409).json({
-              success: false,
-              errors: {
-                body: ['Username or email already exists']
-              }
-            });
-          }
-        })
         .catch(next);
     });
   }
@@ -96,14 +93,14 @@ export default class UsersController {
   }
 
   /**
-   * @function editProfile
-   * @summary Returns a user's details for their profile
-   * @param {object} req - Request object
-   * @param {object} res - Response object
-   * @param {*} next - Incase of errors
-   * @returns {object} An object containing all the data related to the user
-   */
-  static getProfile(req, res, next) {
+  * @function getProfile
+  * @summary Returns a user's details for their profile
+  * @param {object} req - Request object
+  * @param {object} res - Response object
+  * @param {*} next - Incase of errors
+  * @returns {object} An object containing all the data related to the user
+  */
+  static getProfile(req, res) {
     User.findOne({ where: { username: req.params.username } })
       .then((user) => {
         if (!user) {
@@ -115,8 +112,7 @@ export default class UsersController {
           });
         }
         return res.status(200).json(utils.userToJson(user));
-      })
-      .catch(next);
+      });
   }
 
   /**
@@ -140,17 +136,14 @@ export default class UsersController {
           });
         }
         if (req.userId === user.id) {
-          User.update(
-            {
-              username,
-              image,
-              bio
-            },
-            {
-              returning: true,
-              where: { id: user.id }
-            }
-          )
+          User.update({
+            username,
+            image,
+            bio,
+          }, {
+            returning: true,
+            where: { id: user.id }
+          })
             .then(([rows, [updatedUser]]) => {
               if (rows === 0) {
                 return res.status(401).json({
@@ -167,6 +160,7 @@ export default class UsersController {
       })
       .catch(next);
   }
+
 
   /**
    * Verify the email sent to the newly registered user

@@ -21,6 +21,8 @@ router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.
 router.get('/articles/:slug', ArticleControllers.getArticle);
 
 router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
+router.get('/articles', ArticleControllers.listAllArticles);
+router.post('/articles/:slug/like', verifyToken, ArticleControllers.likeArticle);
 
 router.put('/articles/:id/like', verifyToken, idIsInteger, checkArticle, ArticleControllers.likeArticle);
 
