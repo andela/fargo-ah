@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import UserController from '../../controllers/UsersController';
+import utils from '../../helpers/utilities';
 
 import { User } from '../../models';
 
 const router = Router();
 
 router.get('/user/', (req, res, next) => {
-  User.findById(req.payload.id)
+  User.findById(1)
     .then((user) => {
       if (!user) {
         return res.sendStatus(401);
       }
-      return res.json({ user: user.toAuthJSON() });
+      return res.json(utils.userToJson(user));
     })
     .catch(next);
 });
@@ -40,7 +41,7 @@ router.put('/user', (req, res, next) => {
     image: user.image,
     hashedPassword: user.password,
     bio: user.bio
-  }, { where: { id: req.payload.id } }).then((updatedUser) => {
+  }, { where: { id: 1 } }).then((updatedUser) => {
     if (updatedUser[0] === 0) {
       return res.sendStatus(401);
     }
