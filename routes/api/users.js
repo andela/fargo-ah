@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import passport from 'passport';
-import bcrypt from 'bcrypt';
+import UserController from '../../controllers/UsersController';
 
 import { User } from '../../models';
 
@@ -49,44 +48,8 @@ router.put('/user', (req, res, next) => {
   }).catch(next);
 });
 
-router.post('/users/login', (req, res, next) => {
-  if (!req.body.user.email) {
-    return res.status(422).json({ errors: { email: "can't be blank" } });
-  }
+router.post('/users', UserController.registerUser);
 
-  if (!req.body.user.password) {
-    return res.status(422).json({ errors: { password: "can't be blank" } });
-  }
-  passport.authenticate('local',
-    { session: false },
-    (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-      if (user) {
-        return res.json({ user: user.toAuthJSON() });
-      }
-      return res.status(422).json(info);
-    })(req, res, next);
-});
-
-router.post('/users', (req, res, next) => {
-  const newUser = {};
-  newUser.username = req.body.user.username;
-  newUser.email = req.body.user.email;
-  newUser.password = req.body.user.password;
-  bcrypt.hash(newUser.password, 10, (err, hash) => {
-    if (err) {
-      return next(err);
-    }
-    User.create({
-      username: newUser.username,
-      hashedPassword: hash,
-      email: newUser.email,
-    }).then(registeredUser => res.json({
-      user: registeredUser.toAuthJSON(),
-    })).catch(next);
-  });
-});
+router.post('/users/login', UserController.login);
 
 export default router;
