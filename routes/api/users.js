@@ -1,7 +1,9 @@
 import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import checkEmail from '../../helpers/checkEmail';
 import UserController from '../../controllers/UsersController';
-
 import { User } from '../../models';
+import verifyToken from '../../middlewares/verifyToken';
 
 const router = Router();
 
@@ -52,4 +54,24 @@ router.post('/users', UserController.registerUser);
 
 router.post('/users/login', UserController.login);
 
+router.post('/users', (req, res, next) => {
+  const newUser = {};
+  newUser.username = req.body.user.username;
+  newUser.email = req.body.user.email;
+  newUser.password = req.body.user.password;
+  bcrypt.hash(newUser.password, 10, (err, hash) => {
+    if (err) {
+      return next(err);
+    }
+    User.create({
+      username: newUser.username,
+      hashedPassword: hash,
+      email: newUser.email,
+    }).then(registeredUser => res.json({
+      user: registeredUser.toAuthJSON(),
+    })).catch(next);
+  });
+});
+router.post('/users/password/reset', checkEmail, UserController.sendEmail);
+router.put('/users/password/reset/edit', verifyToken, UserController.resetPassword);
 export default router;

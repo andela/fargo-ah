@@ -4,21 +4,12 @@ import chaiHttp from 'chai-http';
 import app from '../../index';
 
 chai.use(chaiHttp);
-
-chai.should();
-
-describe('Test for user controllers', () => {
-  it('True should be equal to true', (done) => {
-    assert.equal('true', 'true');
-    done();
-  });
-});
-
+let authToken;
 describe('Tests for user registration and log in', () => {
   const payload = {
     user: {
       username: 'jake',
-      email: 'jake@jake.jake',
+      email: 'sinmiloluwasunday@yahoo.com',
       password: 'jakejake',
     }
   };
@@ -27,6 +18,7 @@ describe('Tests for user registration and log in', () => {
       .post('/api/users')
       .send(payload)
       .end((err, res) => {
+        authToken = res.body.user.token;
         expect(err).to.equal(null);
         expect(res.statusCode).to.equal(200);
         expect(res.body).to.be.an('object');
@@ -75,7 +67,7 @@ describe('Tests for user registration and log in', () => {
       .post('/api/users/login')
       .send({
         user: {
-          email: 'jake@jake.jake',
+          email: 'sinmiloluwasunday@yahoo.com',
           password: 'jakejake1',
         }
       })
@@ -108,6 +100,37 @@ describe('Tests for user registration and log in', () => {
         expect(res.body.errors.body).to.be.an('array');
         expect(res.body.errors.body[0])
           .to.equal('Authentication failed');
+        done();
+      });
+  });
+});
+describe('Test for password reset', () => {
+  it('It should send email', (done) => {
+    chai.request(app)
+      .post('/api/users/password/reset')
+      .send({
+        user: {
+          email: 'sinmiloluwasunday@yahoo.com',
+        }
+      })
+      .end((err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.body.message, 'Email sent successfully');
+        done();
+      });
+  });
+  it('It should reset password', (done) => {
+    chai.request(app)
+      .put('/api/users/password/reset/edit')
+      .set('authorization', `Bearer ${authToken}`)
+      .send({
+        user: {
+          password: 'tester',
+        }
+      })
+      .end((err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.body.message, 'Password reset successful!');
         done();
       });
   });
