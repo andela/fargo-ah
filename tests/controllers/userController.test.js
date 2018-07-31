@@ -1,10 +1,11 @@
-import chai, { expect } from 'chai';
+import chai, { expect, assert } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../index';
 
 
 chai.use(chaiHttp);
 
+let authToken;
 const user = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTMzMDc3ODcyfQ.YibyD9L42qZB-mFpviFlVBFzXM9-dsnLLzh9Y48-63Y';
 describe('Tests for user controller', () => {
   describe('POST api/users', () => {
@@ -37,6 +38,23 @@ describe('Tests for user controller', () => {
           done();
         });
     });
+    it('should not create a new user if password is not up to 8 characters', (done) => {
+      chai.request(app)
+        .post('/api/users')
+        .send({
+          user: {
+            username: 'jake2886',
+            email: 'jake@jake2886.jak',
+            password: '123456'
+          }
+        })
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.error.body[0].passwordError)
+            .to.equal('Password must not be less than 8 characters');
+          done();
+        });
+    });
 
     it('should not create a new user if password is not alphanumeric', (done) => {
       chai.request(app)
@@ -63,6 +81,7 @@ describe('Tests for user controller', () => {
         .post('/api/users')
         .send(payload)
         .end((err, res) => {
+          authToken = res.body.user.token;
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(200);
           expect(res.body).to.be.an('object');
@@ -147,7 +166,6 @@ describe('Tests for user controller', () => {
         });
     });
   });
-
   describe('User input validations test api/users', () => {
     const data = {
       user: {
@@ -175,90 +193,6 @@ describe('Tests for user controller', () => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.error.body[1].usernameError)
             .to.equal('username cannot be empty');
-          done();
-        });
-    });
-
-    it('should not create a new user if password is not up to 8 characters', (done) => {
-      chai.request(app)
-        .post('/api/users')
-        .send({
-          user: {
-            username: 'jake2886',
-            email: 'jake@jake2886.jak',
-            password: '123456'
-          }
-        })
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].passwordError)
-            .to.equal('Password must not be less than 8 characters');
-          done();
-        });
-    });
-
-    it('should not create a new user if password is not alphanumeric', (done) => {
-      chai.request(app)
-        .post('/api/users')
-        .send(data)
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[2].passwordError)
-            .to.equal('password must be alphanumeric');
-          done();
-        });
-    });
-
-    it('should not create a new user if password field is empty', (done) => {
-      chai.request(app)
-        .post('/api/users')
-        .send({
-          user: {
-            username: 'jake2886',
-            email: 'jake@jake2886.jak',
-            password: ''
-          }
-        })
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].passwordError)
-            .to.equal('Password cannot be empty');
-          done();
-        });
-    });
-
-    it('should not create a new user if username is not up to 5 characters', (done) => {
-      chai.request(app)
-        .post('/api/users')
-        .send({
-          user: {
-            username: 'abj',
-            email: 'jake@jake2886.jak',
-            password: 'abc1234567'
-          }
-        })
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].usernameError)
-            .to.equal('username must not be less than 5 characters');
-          done();
-        });
-    });
-
-    it('should not create a new user if email field is empty', (done) => {
-      chai.request(app)
-        .post('/api/users')
-        .send({
-          user: {
-            username: 'abj',
-            email: '',
-            password: 'abc1234567'
-          }
-        })
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].emailError)
-            .to.equal('Email cannot be empty');
           done();
         });
     });
@@ -425,6 +359,50 @@ describe('Tests for user controller', () => {
             .to.equal('Bio can not be less than 100 characters');
         });
       done();
+    });
+  });
+  describe('Test for password reset', () => {
+    it('It should send email', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          user: { email: 'jake@jake.jak', }
+        })
+        .end((err, res) => {
+          assert.equal(res.status, 200);
+          assert.equal(res.body.message, 'Email sent successfully');
+          done();
+        });
+    });
+    it('It should reset password', (done) => {
+      chai.request(app)
+        .put('/api/users/password/reset/edit')
+        .set('authorization', `Bearer ${authToken}`)
+        .send({
+          user: {
+            password: 'tester123',
+          }
+        })
+        .end((err, res) => {
+          assert.equal(res.status, 200);
+          assert.equal(res.body.message, 'Password reset successful!');
+          done();
+        });
+    });
+    it('It should not reset password if token cannot be found', (done) => {
+      chai.request(app)
+        .put('/api/users/password/reset/edit')
+        .set('authorization', '')
+        .send({
+          user: {
+            password: 'tester123',
+          }
+        })
+        .end((err, res) => {
+          assert.equal(res.status, 401);
+          assert.equal(res.body.errors.body[0], 'No token has been provided in the request');
+          done();
+        });
     });
   });
 });
