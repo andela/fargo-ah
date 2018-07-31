@@ -21,9 +21,7 @@ class ArticleController {
     const {
       title, description, body, tagList, imageData,
     } = req.body.article;
-
     const { userId } = req;
-
     const articleObject = {
       title, description, body, tagList, imageData, userId
     };
