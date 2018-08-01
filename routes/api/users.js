@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import UserController from '../../controllers/UsersController';
 
-import { User } from '../../models';
+import validateSignup from '../../middleware/validateSignup';
+import db from '../../models';
 
 const router = Router();
 
+require('../../config/passport');
+
 router.get('/user/', (req, res, next) => {
-  User.findById(req.payload.id)
+  db.user.findById(req.payload.id)
     .then((user) => {
       if (!user) {
         return res.sendStatus(401);
@@ -34,7 +37,7 @@ router.put('/user', (req, res, next) => {
     user.password = req.body.user.password;
   }
 
-  User.update({
+  db.user.update({
     username: user.username,
     email: user.email,
     image: user.image,
@@ -48,7 +51,7 @@ router.put('/user', (req, res, next) => {
   }).catch(next);
 });
 
-router.post('/users', UserController.registerUser);
+router.post('/users', validateSignup, UserController.registerUser);
 
 router.post('/users/login', UserController.login);
 

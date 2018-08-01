@@ -1,7 +1,7 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
-
 import app from '../../index';
+
 
 chai.use(chaiHttp);
 
@@ -14,12 +14,58 @@ describe('Test for user controllers', () => {
   });
 });
 
+chai.should();
+describe('POST api/users', () => {
+  const data = {
+    user: {
+      username: '',
+      email: 'email@emailcom',
+      password: '12345678',
+    }
+  };
+  it('should not create a new user if email format is not valid', (done) => {
+    chai.request(app)
+      .post('/api/users')
+      .send(data)
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(400);
+        expect(res.body.error.body[0].emailError)
+          .to.equal('Invalid email format');
+        done();
+      });
+  });
+  it('should not create a new user if username field is empty', (done) => {
+    chai.request(app)
+      .post('/api/users')
+      .send(data)
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(400);
+        expect(res.body.error.body[1].usernameError)
+          .to.equal('username cannot be empty');
+        done();
+      });
+  });
+
+  it('should not create a new user if password is not alphanumeric', (done) => {
+    chai.request(app)
+      .post('/api/users')
+      .send(data)
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(400);
+        expect(res.body.error.body[2].passwordError)
+          .to.equal('password must be alphanumeric');
+        done();
+      });
+  });
+});
+
+
 describe('Tests for user registration and log in', () => {
   const payload = {
     user: {
-      username: 'jake',
-      email: 'jake@jake.jake',
-      password: 'jakejake',
+      username: 'jakejake',
+      email: 'jake@jake.jak',
+      password: 'jake12jake',
     }
   };
   it('Should be able to register a user and return a JWT token', (done) => {
