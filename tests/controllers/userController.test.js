@@ -200,6 +200,36 @@ describe('Tests for user registration and log in', () => {
         done();
       });
   });
+  describe('User input validations test api/users', () => {
+    const data = {
+      user: {
+        username: '',
+        email: 'email@emailcom',
+        password: '12345678',
+      }
+    };
+    it('should not create a new user if email format is not valid', (done) => {
+      chai.request(app)
+        .post('/api/users')
+        .send(data)
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.error.body[0].emailError)
+            .to.equal('Invalid email format');
+          done();
+        });
+    });
+    it('should not create a new user if username field is empty', (done) => {
+      chai.request(app)
+        .post('/api/users')
+        .send(data)
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.error.body[1].usernameError)
+            .to.equal('username cannot be empty');
+          done();
+        });
+    });
 
     it('should not create a new user if password is not up to 8 characters', (done) => {
       chai.request(app)
