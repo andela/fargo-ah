@@ -5,8 +5,6 @@ import app from '../../index';
 
 chai.use(chaiHttp);
 
-chai.should();
-
 describe('Test for user controllers', () => {
   it('True should be equal to true', (done) => {
     assert.equal('true', 'true');
@@ -108,6 +106,39 @@ describe('Tests for user registration and log in', () => {
         expect(res.body.errors.body).to.be.an('array');
         expect(res.body.errors.body[0])
           .to.equal('Authentication failed');
+        done();
+      });
+  });
+});
+
+describe('Test for authenticated user routes', () => {
+  it('Should return the logged in user', (done) => {
+    chai.request(app)
+      .get('/api/user')
+      .end((err, res) => {
+        expect(err).to.equal(null);
+        expect(res.statusCode).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.success).to.equal(true);
+        expect(res.body.user).to.be.an('object');
+        done();
+      });
+  });
+
+  it('Should return a status code of 200 on successful editing', (done) => {
+    chai.request(app)
+      .put('/api/user')
+      .send({
+        user: {
+          username: 'jakehans',
+          email: 'jake@jakehans.jake',
+          bio: 'Humans of andela',
+          image: 'https://i.stack.imgur.com/xHWG8.jpg'
+        }
+      })
+      .end((err, res) => {
+        expect(err).to.equal(null);
+        expect(res.statusCode).to.equal(200);
         done();
       });
   });
