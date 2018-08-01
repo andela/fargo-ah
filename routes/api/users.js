@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import UserController from '../../controllers/UsersController';
+import { checkIfUserIsVerified, recover } from '../../helpers/exports';
 
 import validateSignup from '../../middleware/validateSignup';
 import db from '../../models';
 
 const router = Router();
-
-require('../../config/passport');
 
 router.get('/user/', (req, res, next) => {
   db.user.findById(req.payload.id)
@@ -53,6 +52,8 @@ router.put('/user', (req, res, next) => {
 
 router.post('/users', validateSignup, UserController.registerUser);
 
-router.post('/users/login', UserController.login);
+router.post('/users/login', checkIfUserIsVerified, UserController.login);
+router.get('/users/verify/:token', UserController.verifySentEmail);
+router.post('/users/recover', recover);
 
 export default router;

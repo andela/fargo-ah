@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     following: {
       type: DataTypes.STRING,
     },
+    isverified: {
+      type: DataTypes.BOOLEAN,
+    },
     favorites: {
       type: DataTypes.STRING,
     },

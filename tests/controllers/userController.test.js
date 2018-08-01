@@ -68,6 +68,13 @@ describe('Tests for user registration and log in', () => {
       password: 'jake12jake',
     }
   };
+  const seededUser = {
+    user: {
+      username: 'regnewuser',
+      email: 'newuser@register.com',
+      password: 'password123'
+    }
+  };
   it('Should be able to register a user and return a JWT token', (done) => {
     chai.request(app)
       .post('/api/users')
@@ -100,11 +107,12 @@ describe('Tests for user registration and log in', () => {
       });
   });
 
+
   it(`Should be able to login a
   user and return a JWT token`, (done) => {
     chai.request(app)
       .post('/api/users/login')
-      .send(payload)
+      .send(seededUser)
       .end((err, res) => {
         expect(err).to.equal(null);
         expect(res.statusCode).to.equal(200);
@@ -121,8 +129,8 @@ describe('Tests for user registration and log in', () => {
       .post('/api/users/login')
       .send({
         user: {
-          email: 'jake@jake.jake',
-          password: 'jakejake1',
+          email: 'makesense@jake.jake',
+          password: 'jakejakesense',
         }
       })
       .end((err, res) => {
@@ -142,8 +150,8 @@ describe('Tests for user registration and log in', () => {
       .post('/api/users/login')
       .send({
         user: {
-          email: 'jake@jake1.jake',
-          password: 'jakejake',
+          email: 'newuse@register.com',
+          password: 'password123',
         }
       })
       .end((err, res) => {
@@ -156,5 +164,85 @@ describe('Tests for user registration and log in', () => {
           .to.equal('Authentication failed');
         done();
       });
+  });
+
+  it('Should not login in unverified user incorrect email', (done) => {
+    chai.request(app)
+      .post('/api/users/login')
+      .send({
+        user: {
+          email: 'newusertwo@register.com',
+          password: 'password123',
+        }
+      })
+      .end((err, res) => {
+        expect(err).to.equal(null);
+        expect(res.statusCode).to.equal(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body.success).to.equal(false);
+        expect(res.body.errors.body).to.be.an('array');
+        expect(res.body.errors.body[0])
+          .to.equal('You account has not been activated');
+        done();
+      });
+  });
+
+
+  describe('Tests for resending user verification email ', () => {
+    const unRegisteredUser = {
+      user: {
+        email: 'newuserzzz@register.com',
+      }
+    };
+    const seededData = {
+      user: {
+        email: 'newuser@register.com',
+        password: 'password123',
+      }
+    };
+    const seededData2 = {
+      user: {
+        email: 'newusertwo@register.com',
+        password: 'password123',
+      }
+    };
+    it('Should send a verification email to unverified users', (done) => {
+      chai.request(app)
+        .post('/api/users/recover')
+        .send(seededData2)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.message.body[0])
+            .to.equal('A verification email will be sent to you if your account is not yet verified');
+          done();
+        });
+    });
+
+    it('Should not send a verification email to verified users', (done) => {
+      chai.request(app)
+        .post('/api/users/recover')
+        .send(seededData)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.errors.body[0])
+            .to.equal('A verification email will be sent to you if your account is not yet verified');
+          done();
+        });
+    });
+
+
+    it('Should not verify an Invalid verification token', (done) => {
+      chai.request(app)
+        .get('/api/users/verify/sandjklasdjsalsdkasdksdkjskda')
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.errors.body[0])
+            .to.equal('Your verification link has expired or invalid');
+          done();
+        });
+    });
   });
 });
