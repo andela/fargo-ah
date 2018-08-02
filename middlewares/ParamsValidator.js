@@ -26,13 +26,34 @@ export default class ParamsValidator {
    * @param {string} req - The request to be validated
    * @param {string} res - The response from validation
    * @param {string} next - The next function
-   * @returns {boolean} if the username is alphanumeric or not
+   * @returns {boolean} if the user id is alphaintegernumeric or not
    */
   static validateId(req, res, next) {
     const isId = /^[0-9]*$/;
     const test = isId.test(req.userId);
     if (!test) {
-      return res.status(400).json({
+      return res.status(403).json({
+        success: false,
+        errors: {
+          body: ['Invalid id'],
+        }
+      });
+    }
+    next();
+  }
+
+  /**
+   * Converts payload to JWT
+   * @param {string} req - The request to be validated
+   * @param {string} res - The response from validation
+   * @param {string} next - The next function
+   * @returns {boolean} if the params id is integer or not
+   */
+  static validateParamId(req, res, next) {
+    const isId = /^[0-9]*$/;
+    const test = isId.test(req.params.id);
+    if (!test) {
+      return res.status(403).json({
         success: false,
         errors: {
           body: ['Invalid id'],
