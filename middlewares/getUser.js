@@ -10,7 +10,7 @@ const getUser = (req, res, next) => {
   }
   db.User.find({ where: whereField })
     .then((user) => {
-      if (!user || user.rowCount === 0) {
+      if (!user) {
         return res.status(404).json({
           success: false,
           errors: {

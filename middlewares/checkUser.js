@@ -23,11 +23,7 @@ export const articleExists = (req, res, next) => {
       req.count = foundArticle.updatedCount;
       next();
     })
-    .catch((err) => {
-      res.status(500).json({
-        error: err
-      });
-    });
+    .catch(next);
 };
 
 export const checkCount = (req, res, next) => {
