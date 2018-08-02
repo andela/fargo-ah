@@ -3,6 +3,7 @@ const validUser = {
     email: 'oluanu@yahoo.com',
     username: 'Lumex',
     password: 'spirit2019',
+    isverified: true
   }
 };
 
@@ -14,6 +15,16 @@ const validArticleData = {
     tagList: ['reactjs', 'angularjs', 'dragons']
   }
 };
+
+const validArticleData2 = {
+  article: {
+    title: 'How to train your dragon',
+    description: 'Ever wonder how?',
+    body: 'You have to believe',
+    tagList: ['fiction']
+  }
+};
+
 
 const editedArticle = {
   article: {
@@ -55,4 +66,5 @@ export default {
   dataWithNoDescription,
   dataWithNoBody,
   editedArticle,
+  validArticleData2
 };

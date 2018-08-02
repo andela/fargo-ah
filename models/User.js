@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     bio: {
       type: DataTypes.STRING,
     },
+    isverified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     image: {
       type: DataTypes.STRING,
     },

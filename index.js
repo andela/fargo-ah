@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
+import validator from 'express-validator';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
@@ -67,7 +68,6 @@ app.use((req, res, next) => {
 // will print stacktrace
 if (!isProduction) {
   app.use((err, req, res) => {
-    debug(err.stack);
     res.status(err.status || 500);
     res.json({
       errors: {
