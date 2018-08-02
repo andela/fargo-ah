@@ -87,8 +87,7 @@ export default class Utilities {
     }
     transport.sendMail(mailOptions, (error) => {
       if (error) {
-        error.message = 'Email failed to send';
-        return next(error);
+        return next(error.message);
       }
       res.status(200).json({ message: 'Email sent successfully' });
     });

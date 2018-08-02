@@ -11,11 +11,11 @@ const validateProfile = (req, res, next) => {
       error.push('Username can not be less than 5 characters');
     }
   }
-  if (bio) {
-    if (bio.length < 100) {
-      error.push('Bio can not be less than 100 characters');
-    }
+  // if (bio) {
+  if (bio && bio.length < 100) {
+    error.push('Bio can not be less than 100 characters');
   }
+  // }
   if (image) {
     if (!validUrl.test(image)) {
       error.push('Image must be a valid url');
