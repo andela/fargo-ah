@@ -12,6 +12,7 @@ const {
   dataWithNoDescription,
   dataWithNoBody,
   editedArticle,
+  validArticleData2
 } = seedData;
 let validToken, createdArticle;
 
@@ -236,6 +237,69 @@ describe('Articles API endpoints', () => {
       .end((err, res) => {
         expect(res).to.have.status(204);
         expect(res.body).to.be.an('object');
+        done();
+      });
+  });
+  it('Should create article with required fields for authenticated user', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send(validArticleData)
+      .end((err, res) => {
+        createdArticle = res.body.article;
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object').to.have.property('article');
+        expect(createdArticle).to.be.an('object').to.have.property('slug');
+        expect(createdArticle.slug).to.be.a('string');
+        expect(createdArticle.title).to.equal(validArticleData.article.title);
+        expect(createdArticle.body).to.equal(validArticleData.article.body);
+        expect(createdArticle.description).to.equal(validArticleData.article.description);
+        expect(createdArticle.tagList).to.be.an('array').with.lengthOf(validArticleData.article.tagList.length);
+        expect(createdArticle.User).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
+        expect(createdArticle.User).to.have.property('bio');
+        expect(createdArticle.User).to.have.property('image');
+        done();
+      });
+  });
+
+  it('Should create article with required fields for authenticated user', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send(validArticleData2)
+      .end((err, res) => {
+        createdArticle = res.body.article;
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object').to.have.property('article');
+        expect(createdArticle).to.be.an('object').to.have.property('slug');
+        expect(createdArticle.slug).to.be.a('string');
+        expect(createdArticle.title).to.equal(validArticleData.article.title);
+        expect(createdArticle.body).to.equal(validArticleData.article.body);
+        expect(createdArticle.description).to.equal(validArticleData.article.description);
+        expect(createdArticle.User).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
+        expect(createdArticle.User).to.have.property('bio');
+        expect(createdArticle.User).to.have.property('image');
+        done();
+      });
+  });
+
+  it('Should get articles by fiction', (done) => {
+    chai.request(app)
+      .get('/api/articles/?tag=fiction')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        expect(res.body).to.have.property('articles').to.be.an('array');
+        done();
+      });
+  });
+
+  it('Should not find articles by title', (done) => {
+    chai.request(app)
+      .get('/api/articles/?title=fiction')
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
         done();
       });
   });

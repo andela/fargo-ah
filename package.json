@@ -4,16 +4,19 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc mocha tests/**/*.test.js  --compilers js:babel-register --require babel-polyfill --exit",
     "test:db:seed": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
     "pretest": "NODE_ENV=test npm run migrate:undo && NODE_ENV=test npm run migrate && NODE_ENV=test npm run test:db:seed",
+    "test": "NODE_ENV=test nyc mocha tests/**/*.test.js  --compilers js:babel-register --timeout 30000 --require babel-polyfill --exit",
     "prestart": "babel ./ -d dist --presets=env --ignore node_modules",
     "start": "node ./dist/index.js",
     "dev": "DEBUG=index nodemon --exec babel-node --presets babel-preset-env ./index.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "check-coverage": "nyc check-coverage --lines 70 --per-file",
+    "createlocalschema": "NODE_ENV=test npm run migrate",
     "migrate": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:migrate",
-    "migrate:undo": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:migrate:undo:all"
+    "migrate:undo": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:migrate:undo:all",
+    "seed:newuser": "NODE_ENV=test ./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
+    "seed:newuser:undo": "NODE_ENV=test ./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:undo:all"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -33,12 +36,14 @@
     "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
+    "express-validator": "^5.3.0",
     "jsonwebtoken": "^8.3.0",
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
     "mocha": "^5.2.0",
     "morgan": "^1.9.0",
     "node-time-uuid": "^0.1.5",
+    "nodemailer": "^4.6.7",
     "nyc": "^12.0.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
@@ -48,7 +53,9 @@
     "sequelize": "^4.38.0",
     "slug": "^0.9.1",
     "slugify": "^1.3.0",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "validator": "^10.5.0",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

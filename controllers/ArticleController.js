@@ -83,9 +83,13 @@ class ArticleController {
    * get all articles created
    * @param {object} req - request object
    * @param {object} res - response object
+   * @param {object} next - pass to next middleware
    * @returns {object} - the found article from database or empty if not found
    */
-  static listAllArticles(req, res) {
+  static listAllArticles(req, res, next) {
+    if (req.query.uid || req.query.tag || req.query.title) {
+      return next();
+    }
     return Article
       .findAll({
         include: [{

@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 import db from '../models';
 import utils from '../helpers/utilities';
+import sendVerificationEmail from '../helpers/sendmail';
 
 /** * Class representing users */
 export default class UsersController {
@@ -30,6 +32,7 @@ export default class UsersController {
             hashedPassword: hash,
           }).then((registeredUser) => {
             const token = utils.signToken({ id: registeredUser.id });
+            sendVerificationEmail.sendEmail(registeredUser);
             res.status(200).json(utils.userToJson(registeredUser, token));
           }).catch(next);
         } else {
@@ -159,5 +162,39 @@ export default class UsersController {
           body: [err]
         },
       }));
+  }
+
+  /**
+   * Verify the email sent to the newly registered user
+   * @param {*} req - request object
+   * @param {*} res - response object
+   * @param {*} next - Next function
+   * @returns {token} token - returns JWT token
+   */
+  static async verifyEmail(req, res) {
+    const { token } = req.params;
+    try {
+      const decodedUserData = jwt.verify(token, process.env.SECRETE_KEY);
+      const userFound = await db.User.findOne({ where: { id: decodedUserData.id } });
+      if (userFound) {
+        if (userFound.isverified) {
+          return res.status(400).json({
+            success: false,
+            errors: {
+              body: ['You account has already been activated'],
+            }
+          });
+        }
+      }
+      db.User.update(
+        { isverified: true },
+        { where: { id: decodedUserData.id } }
+      );
+      return res.status(200).json({ message: 'The user has been verified' });
+    } catch (err) {
+      return res.status(400).json({
+        errors: { body: ['Your verification link has expired or invalid'] }
+      });
+    }
   }
 }
