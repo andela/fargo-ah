@@ -14,12 +14,7 @@ const getUser = (req, res, next) => {
       req.userObject = user;
       next();
     })
-    .catch(err => res.status(500).json({
-      success: false,
-      errors: {
-        body: [err]
-      },
-    }));
+    .catch(next);
 };
 
 export default getUser;
