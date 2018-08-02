@@ -22,16 +22,29 @@ export default class Utilities {
  * @returns {Object} user object
  */
   static userToJson(userObject, token) {
-    const output = {
-      success: true,
-      user: {
-        email: userObject.email,
-        token,
-        username: userObject.username,
-        bio: userObject.bio,
-        image: userObject.image,
-      },
-    };
+    let output = '';
+    if (token) {
+      output = {
+        success: true,
+        user: {
+          email: userObject.email,
+          token,
+          username: userObject.username,
+          bio: userObject.bio,
+          image: userObject.image,
+        },
+      };
+    } else {
+      output = {
+        success: true,
+        user: {
+          email: userObject.email,
+          username: userObject.username,
+          bio: userObject.bio,
+          image: userObject.image,
+        },
+      };
+    }
     return output;
   }
 }

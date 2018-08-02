@@ -1,20 +1,19 @@
 import { Router } from 'express';
 import UserController from '../../controllers/UsersController';
+import utils from '../../helpers/utilities';
 
 import validateSignup from '../../middleware/validateSignup';
 import db from '../../models';
 
 const router = Router();
 
-require('../../config/passport');
-
 router.get('/user/', (req, res, next) => {
-  db.user.findById(req.payload.id)
+  db.User.findById(1)
     .then((user) => {
       if (!user) {
         return res.sendStatus(401);
       }
-      return res.json({ user: user.toAuthJSON() });
+      return res.json(utils.userToJson(user));
     })
     .catch(next);
 });
@@ -37,13 +36,13 @@ router.put('/user', (req, res, next) => {
     user.password = req.body.user.password;
   }
 
-  db.user.update({
+  db.User.update({
     username: user.username,
     email: user.email,
     image: user.image,
     hashedPassword: user.password,
     bio: user.bio
-  }, { where: { id: req.payload.id } }).then((updatedUser) => {
+  }, { where: { id: 1 } }).then((updatedUser) => {
     if (updatedUser[0] === 0) {
       return res.sendStatus(401);
     }

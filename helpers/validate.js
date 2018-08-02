@@ -45,7 +45,7 @@ export default class ValidateUser {
   static validatePassword(str) {
     const passwordFormat = /((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i;
     if (!str || str.trim().length < 1) {
-      return { error: 'Password cannnot be empty' };
+      return { error: 'Password cannot be empty' };
     }
 
     if (str.trim().length < 8) {
