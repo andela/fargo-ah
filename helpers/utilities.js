@@ -21,14 +21,13 @@ export default class Utilities {
  * @param {string} token - String
  * @returns {Object} user object
  */
-  static userToJson(userObject, token) {
-    let output = '';
-    if (token) {
+  static userToJson(userObject, token = null) {
+    let output;
+    if (token === null) {
       output = {
         success: true,
         user: {
           email: userObject.email,
-          token,
           username: userObject.username,
           bio: userObject.bio,
           image: userObject.image,
@@ -39,6 +38,7 @@ export default class Utilities {
         success: true,
         user: {
           email: userObject.email,
+          token,
           username: userObject.username,
           bio: userObject.bio,
           image: userObject.image,
