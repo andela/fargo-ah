@@ -5,7 +5,7 @@ import mailtemplate from './mailtemplate';
 exports.sendEmail = async (userToBeVerified) => {
   const token = jwt.sign(
     { id: userToBeVerified.id },
-    process.env.SECRETE_KEY, { expiresIn: 60 * process.env.VERIFYTOKEN_EXPIRY }
+    process.env.SECRET_KEY, { expiresIn: 60 * process.env.VERIFYTOKEN_EXPIRY }
   );
 
   // create template link

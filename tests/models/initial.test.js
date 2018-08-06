@@ -12,7 +12,8 @@ describe('Entry point', () => {
       chai.request(app)
         .get('/api/bad-route')
         .end((err, res) => {
-          expect(res.status).to.equal(404);
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(404);
           done();
         });
     });
