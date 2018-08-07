@@ -3,6 +3,7 @@ import { Router } from 'express';
 import ArticleControllers from '../../controllers/ArticleController';
 import validateArticle from '../../middlewares/validateArticle';
 import verifyToken from '../../middlewares/verifyToken';
+import ParamsValidator from '../../middlewares/ParamsValidator';
 import { checkCount, articleExists } from '../../middlewares/checkUser';
 
 
@@ -17,6 +18,6 @@ router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.
 
 router.get('/articles/:slug', ArticleControllers.getArticle);
 
-router.get('/articles', ArticleControllers.listAllArticles);
+router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
 
 export default router;

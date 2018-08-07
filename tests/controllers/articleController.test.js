@@ -21,18 +21,19 @@ describe('Articles API endpoints', () => {
       .get('/api/articles')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No articles created');
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('Sorry, no articles created');
         expect(res.body).to.have.property('articles').to.be.an('array').with.lengthOf(0);
         done();
       });
   });
+
   it('Should register user', (done) => {
     chai.request(app)
       .post('/api/users')
       .send(validUser)
       .end((err, res) => {
-        expect(res).to.have.status(200);
         validToken = res.body.user.token;
+        expect(res).to.have.status(200);
         expect(res).to.have.status(200);
         done();
       });
@@ -194,6 +195,73 @@ describe('Articles API endpoints', () => {
       });
   });
 
+  it('Should paginate articles when limit and page is provided', (done) => {
+    chai.request(app)
+      .get('/api/articles?page=1&limit=10')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.articles).to.be.an('array').with.lengthOf(1);
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
+  it('Should paginate articles when only page query is provided', (done) => {
+    chai.request(app)
+      .get('/api/articles?page=1')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.articles).to.be.an('array').with.lengthOf(1);
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
+  it('Should paginate articles when page query is less than 1', (done) => {
+    chai.request(app)
+      .get('/api/articles?page=0')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.articles).to.be.an('array').with.lengthOf(1);
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
+  it('Should paginate articles when limit query is less than 1', (done) => {
+    chai.request(app)
+      .get('/api/articles?limit=0')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.articles).to.be.an('array').with.lengthOf(1);
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
+
+  it('Should paginate articles when only limit query is provided', (done) => {
+    chai.request(app)
+      .get('/api/articles?limit=5')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.articles).to.be.an('array').with.lengthOf(1);
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
+  it('Should return empty array for query that exceeds number of articles during pagination', (done) => {
+    chai.request(app)
+      .get('/api/articles?page=10')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('articles limit exceeded');
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
+
   it('Should be able to edit an article created by a user', (done) => {
     chai.request(app)
       .put(`/api/articles/${createdArticle.slug}`)
@@ -258,6 +326,7 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
+
   it('Should delete an article created by a user', (done) => {
     chai.request(app)
       .delete(`/api/articles/${createdArticle.slug}`)
