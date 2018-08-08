@@ -191,6 +191,26 @@ describe('Articles API endpoints', () => {
       });
   });
 
+  it('Should not create article if Article is to be paid for, but price is not set', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send({
+        article: {
+          title: 'How to train your dragon',
+          description: 'Ever wonder how?',
+          body: 'You have to believe',
+          price: '',
+          isPaidFor: true
+        }
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.errors.body[0]).to.equal('Article is to be paid for, but price is not set');
+        done();
+      });
+  });
+
   it('Should not create article if price of article is less than the lower price boundary', (done) => {
     chai.request(app)
       .post('/api/articles')
@@ -494,7 +514,6 @@ describe('Articles API endpoints', () => {
     assert.equal(countReadTime(460), 2);
     done();
   });
-
   it('Should return an empty array when no tags are created', (done) => {
     chai.request(app)
       .get('/api/tags')
