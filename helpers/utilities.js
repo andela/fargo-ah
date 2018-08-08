@@ -140,6 +140,7 @@ export default class Utilities {
       })
       .catch(next);
   }
+
   /**
   * @function increaseCount
   * @summary: A funtion to increase count
