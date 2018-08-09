@@ -49,7 +49,7 @@ app.use(routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
+  const err = new Error('You are not where you intend to be, please input a valid path');
   err.status = 404;
   next(err);
 });
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (!isProduction) {
-  app.use((err, req, res) => {
+  app.use((err, req, res, next) => {
     debug(err.stack);
     res.status(err.status || 500);
     res.json({
@@ -73,7 +73,7 @@ if (!isProduction) {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({
     errors: {
