@@ -4,11 +4,12 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
+import validator from 'express-validator';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
-
-import { } from 'dotenv/config';
+import cloudinary from 'cloudinary';
+import config from './config';
 
 import routes from './routes';
 
@@ -18,6 +19,13 @@ const debug = debugLog('index');
 
 // Create global app object
 const app = express();
+
+/** configure cloudinary to be able to upload image */
+cloudinary.config({
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
+});
 
 app.use(cors());
 
@@ -60,7 +68,6 @@ app.use((req, res, next) => {
 // will print stacktrace
 if (!isProduction) {
   app.use((err, req, res) => {
-    debug(err.stack);
     res.status(err.status || 500);
     res.json({
       errors: {
@@ -84,7 +91,7 @@ app.use((err, req, res) => {
 });
 
 // finally, let's start our server...
-const server = app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(process.env.PORT || 7000, () => {
   debug(`Listening on port ${server.address().port}`);
 });
 

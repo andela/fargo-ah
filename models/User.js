@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     bio: {
       type: DataTypes.STRING,
     },
+    isverified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     image: {
       type: DataTypes.STRING,
     },
@@ -26,5 +30,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
   }, {});
+
+  User.associate = (models) => {
+    User.hasMany(models.Article, {
+      foreignKey: 'userId',
+      as: 'articles',
+    });
+  };
   return User;
 };
