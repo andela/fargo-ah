@@ -49,7 +49,7 @@ app.use(routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
+  const err = new Error('You are not where you intend to be, please input a valid path');
   err.status = 404;
   next(err);
 });
