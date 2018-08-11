@@ -3,7 +3,9 @@ import { Op } from 'sequelize';
 import db from '../models';
 import utils from '../helpers/utilities';
 
-/** * Class representing users */
+/**
+ * Class representing users
+ */
 export default class UsersController {
   /**
   * Register a user and return a JWT token

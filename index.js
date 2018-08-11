@@ -7,7 +7,7 @@ import errorhandler from 'errorhandler';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
-
+import expressValidator from 'express-validator';
 import { } from 'dotenv/config';
 
 import routes from './routes';
@@ -44,7 +44,7 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 
-
+app.use(expressValidator());
 app.use(routes);
 
 // catch 404 and forward to error handler
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (!isProduction) {
-  app.use((err, req, res) => {
+  app.use((err, req, res, next) => {
     debug(err.stack);
     res.status(err.status || 500);
     res.json({
@@ -68,12 +68,13 @@ if (!isProduction) {
         error: err
       }
     });
+    next();
   });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({
     errors: {
@@ -81,6 +82,7 @@ app.use((err, req, res) => {
       error: {}
     }
   });
+  next();
 });
 
 // finally, let's start our server...
