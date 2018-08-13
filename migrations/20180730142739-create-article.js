@@ -38,10 +38,6 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE
     },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
     userId: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
@@ -56,6 +52,10 @@ module.exports = {
     },
     price: {
       type: Sequelize.DECIMAL
+    },
+    updatedAt: {
+      allowNull: false,
+      type: Sequelize.DATE
     }
   }),
   down: (queryInterface/* , Sequelize */) => {

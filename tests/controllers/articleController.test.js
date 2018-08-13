@@ -191,26 +191,6 @@ describe('Articles API endpoints', () => {
       });
   });
 
-  it('Should not create article if Article is to be paid for, but price is not set', (done) => {
-    chai.request(app)
-      .post('/api/articles')
-      .set('authorization', `Bearer ${validToken}`)
-      .send({
-        article: {
-          title: 'How to train your dragon',
-          description: 'Ever wonder how?',
-          body: 'You have to believe',
-          price: '',
-          isPaidFor: true
-        }
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.errors.body[0]).to.equal('Article is to be paid for, but price is not set');
-        done();
-      });
-  });
-
   it('Should not create article if price of article is less than the lower price boundary', (done) => {
     chai.request(app)
       .post('/api/articles')
@@ -474,6 +454,15 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
+  it('Should not allow a user like an article if token is wrong', (done) => {
+    chai.request(app)
+      .put('/api/articles/1/like')
+      .set('authorization', `Bearer ${validToken}sdfdg`)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
   it('Should not allow a user like an article with non-existing article id in the parameter', (done) => {
     chai.request(app)
       .put('/api/articles/50/like')
@@ -509,7 +498,26 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
-
+  it('Should not delete an article created by a user if token is wrong', (done) => {
+    chai.request(app)
+      .delete(`/api/articles/${createdArticle.slug}`)
+      .set('authorization', `Bearer ${validToken}sdfg`)
+      .send(editedArticle)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+  it('Should not delete an article created by a user if article does not exist', (done) => {
+    chai.request(app)
+      .delete(`/api/articles/${createdArticle.slug}sdf@`)
+      .set('authorization', `Bearer ${validToken}`)
+      .send(editedArticle)
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        done();
+      });
+  });
   it('Should count how long it takes to read an article', (done) => {
     assert.equal(countReadTime(460), 2);
     done();

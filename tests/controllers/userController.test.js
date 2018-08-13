@@ -713,6 +713,19 @@ describe('Tests for user controller', () => {
         });
       done();
     });
+
+    it('Should return error if the token is invalid', (done) => {
+      chai
+        .request(app)
+        .delete('/api/profiles/JakeJoneOkpara/follow')
+        .set('authorization', `Bearer ${validToken}asdfg`)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.errors.body[0]).to.equal('Could not authenticate the provided token');
+        });
+      done();
+    });
   });
   describe('Test for password reset', () => {
     it('It should send email', (done) => {

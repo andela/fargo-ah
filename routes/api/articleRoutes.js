@@ -7,23 +7,58 @@ import ParamsValidator from '../../middlewares/ParamsValidator';
 import idIsInteger from '../../middlewares/idIsInteger';
 import checkArticle from '../../middlewares/checkArticle';
 import { checkCount, articleExists } from '../../middlewares/checkUser';
+import getArticle from '../../middlewares/getArticle';
+import toggleFree from '../../middlewares/toggleFree';
 
 
 const router = Router();
 
-router.post('/articles', verifyToken, validateArticle, validatePrice, ArticleControllers.createArticle);
+router.post(
+  '/articles',
+  verifyToken,
+  validateArticle,
+  validatePrice,
+  ArticleControllers.createArticle
+);
+router.put(
+  '/articles/:slug',
+  validateArticle,
+  validatePrice,
+  verifyToken,
+  articleExists,
+  checkCount,
+  ArticleControllers.editArticle
+);
+router.delete(
+  '/articles/:slug',
+  verifyToken,
+  articleExists,
+  ArticleControllers.deleteArticle
+);
+router.get(
+  '/articles/:slug',
+  getArticle,
+  toggleFree,
+  ArticleControllers.getArticle
+);
+router.get(
+  '/articles',
+  ParamsValidator.validatePageQuery,
+  ArticleControllers.listAllArticles
+);
+router.post(
+  '/articles/:slug/like',
+  verifyToken,
+  ArticleControllers.likeArticle,
+);
 
-router.put('/articles/:slug', validateArticle, validatePrice, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);
-
-router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.deleteArticle);
-
-router.get('/articles/:slug', ArticleControllers.getArticle);
-
-router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
-router.get('/articles', ArticleControllers.listAllArticles);
-router.post('/articles/:slug/like', verifyToken, ArticleControllers.likeArticle);
-
-router.put('/articles/:id/like', verifyToken, idIsInteger, checkArticle, ArticleControllers.likeArticle);
+router.put(
+  '/articles/:id/like',
+  verifyToken,
+  idIsInteger,
+  checkArticle,
+  ArticleControllers.likeArticle
+);
 
 router.get('/tags', ArticleControllers.getAllTags);
 

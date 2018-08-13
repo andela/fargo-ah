@@ -4,6 +4,9 @@ const { Article, Like, User } = db;
 const getArticle = (req, res, next) => {
   Article.findOne({
     include: [{
+      model: User,
+      attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+    }, {
       model: Like,
       as: 'likes',
       include: [{
@@ -22,7 +25,7 @@ const getArticle = (req, res, next) => {
         return res.status(404).json({
           success: false,
           errors: {
-            body: ['The article does not exist']
+            body: ['Ooops! the article cannot be found.']
           },
         });
       }

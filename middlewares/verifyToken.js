@@ -1,7 +1,12 @@
 import jwt from 'jsonwebtoken';
 
 const verifyToken = (req, res, next) => {
-  const fullToken = req.headers.authorization;
+  let fullToken;
+  if (req.body.authorization) {
+    fullToken = req.body.authorization;
+  } else {
+    fullToken = req.headers.authorization;
+  }
   if (!fullToken) {
     return res.status(401).json({
       success: false,
