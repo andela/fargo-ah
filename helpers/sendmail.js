@@ -13,7 +13,7 @@ exports.sendEmail = async (userToBeVerified) => {
   const templateLink = `${process.env.URL_HOST}${token}`;
   const htmlTempate = mailtemplate.emailTemplate(templateLink);
   const mailOptions = {
-    from: '"Authors haven" <noreply@authorhaven.sims.com>',
+    from: `"Authors haven" <${process.env.NO_REPLY_MAIL}>`,
     to: userToBeVerified.email,
     subject: 'Verify your email on Authors ✔',
     text: 'A writers dream an authors haven',
