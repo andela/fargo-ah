@@ -1,10 +1,12 @@
+import { } from 'dotenv/config';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import mailer from 'nodemailer';
 import stubTransport from 'nodemailer-stub-transport';
 import { User } from '../models';
 
-/** Class representing all utility functions   */
+
+/** Class representing all utility functions */
 export default class Utilities {
 /**
  * Converts payload to JWT

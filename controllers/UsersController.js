@@ -115,9 +115,10 @@ export default class UsersController {
   * @summary Return a user's profile after updating it
   * @param {object} req - Request object
   * @param {object} res - Response object
+  * @param {function} next - For errors
   * @returns {object} An object containing all the data related to the user if update successful
   */
-  static editProfile(req, res) {
+  static editProfile(req, res, next) {
     const { username, image, bio } = req.body.user;
     db.User.findOne({ where: { username: req.params.username } })
       .then((user) => {
@@ -148,18 +149,9 @@ export default class UsersController {
                 });
               }
               return res.status(200).json(utils.userToJson(updatedUser));
-            }).catch(err => res.status(404).json({
-              errors: {
-                body: [err]
-              },
-            }));
+            }).catch(next);
         }
       })
-      .catch(err => res.status(404).json({
-        success: false,
-        errors: {
-          body: [err]
-        },
-      }));
+      .catch(next);
   }
 }

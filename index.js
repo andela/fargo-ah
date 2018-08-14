@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import passport from 'passport';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
 import methodOverride from 'method-override';
@@ -10,15 +11,22 @@ import debugLog from 'debug';
 import expressValidator from 'express-validator';
 import { } from 'dotenv/config';
 
+import passportConfig from './config/passport';
 import routes from './routes';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const debug = debugLog('index');
+passport.serializeUser(((user, done) => {
+  done(null, user);
+}));
+passport.deserializeUser(((user, done) => {
+  done(null, user);
+}));
 
 // Create global app object
 const app = express();
-
+passportConfig(app);
 app.use(cors());
 
 // Normal express config defaults;
