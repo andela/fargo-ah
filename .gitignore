@@ -39,3 +39,5 @@ dist/
 # enviroment variables
 .env
 
+#txt
+txt.txt
