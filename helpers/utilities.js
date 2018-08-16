@@ -5,7 +5,6 @@ import mailer from 'nodemailer';
 import stubTransport from 'nodemailer-stub-transport';
 import { User } from '../models';
 
-
 /**
  *  Class representing all utility functions
  *
@@ -143,18 +142,12 @@ export default class Utilities {
 
   /**
   * @function increaseCount
-  * @summary: API controller to handle requests
-  * to delete an article
-  * @param {Integer} num: input param
-  * @returns {object} api response: article object for
-  * successful requests, or error object for
-  * requests that fail
+  * @summary: A funtion to increase count
+  * each time an article is updated
+  * @param {Integer} count: input param
+  * @returns {Integer} number of count: for updating articles
   */
-  static increaseCount(num) {
-    if (Number.isInteger(num)) {
-      let updateCount = num;
-      updateCount += 1;
-      return updateCount;
-    }
+  static increaseCount(count) {
+    if (Number.isInteger(count)) return count + 1;
   }
 }

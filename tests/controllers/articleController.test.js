@@ -9,6 +9,7 @@ chai.use(chaiHttp);
 const {
   validUser,
   validArticleData,
+  validArticleData2,
   dataWithNoTitle,
   dataWithNoDescription,
   dataWithNoBody,
@@ -16,6 +17,7 @@ const {
 } = seedData;
 
 let validToken, createdArticle;
+
 
 
 describe('Articles API endpoints', () => {
@@ -27,6 +29,18 @@ describe('Articles API endpoints', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object').to.have.property('message').to.equal('Sorry, no articles created');
         expect(res.body).to.have.property('articles').to.be.an('array').with.lengthOf(0);
+        done();
+      });
+  });
+
+  it('Should return an empty array when no tags are created', (done) => {
+    chai.request(app)
+      .get('/api/tags')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.message).to.equal('No tags created');
+        expect(res.body.tags.length).to.equal(0);
         done();
       });
   });
@@ -287,7 +301,16 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
-
+  it('Should return empty array for query that exceeds number of articles during pagination', (done) => {
+    chai.request(app)
+      .get('/api/articles?page=20')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('articles limit exceeded');
+        expect(res.body.articlesCount).to.equal(res.body.articles.length);
+        done();
+      });
+  });
   it('Should paginate articles when limit and page is provided', (done) => {
     chai.request(app)
       .get('/api/articles?page=1&limit=10')
@@ -339,17 +362,6 @@ describe('Articles API endpoints', () => {
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body.articles).to.be.an('array').with.lengthOf(1);
-        expect(res.body.articlesCount).to.equal(res.body.articles.length);
-        done();
-      });
-  });
-
-  it('Should return empty array for query that exceeds number of articles during pagination', (done) => {
-    chai.request(app)
-      .get('/api/articles?page=10')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object').to.have.property('message').to.equal('articles limit exceeded');
         expect(res.body.articlesCount).to.equal(res.body.articles.length);
         done();
       });
@@ -488,13 +500,21 @@ describe('Articles API endpoints', () => {
 
   it('Should delete an article created by a user', (done) => {
     chai.request(app)
-      .delete(`/api/articles/${createdArticle.slug}`)
+      .post('/api/articles')
       .set('authorization', `Bearer ${validToken}`)
-      .send(editedArticle)
+      .send(validArticleData2)
       .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body.message).to.equal('Article successfully deleted');
+        createdArticle = res.body.article;
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object').to.have.property('article');
+        expect(createdArticle).to.be.an('object').to.have.property('slug');
+        expect(createdArticle.slug).to.be.a('string');
+        expect(createdArticle.title).to.equal(validArticleData.article.title);
+        expect(createdArticle.body).to.equal(validArticleData.article.body);
+        expect(createdArticle.description).to.equal(validArticleData.article.description);
+        expect(createdArticle.User).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
+        expect(createdArticle.User).to.have.property('bio');
+        expect(createdArticle.User).to.have.property('image');
         done();
       });
   });
@@ -522,14 +542,52 @@ describe('Articles API endpoints', () => {
     assert.equal(countReadTime(460), 2);
     done();
   });
-  it('Should return an empty array when no tags are created', (done) => {
+
+  // Articles by search
+  it('Should not find articles by the wrong title', (done) => {
     chai.request(app)
-      .get('/api/tags')
+      .get('/api/articles/?title=fiction')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body.message).to.equal('No tags created');
-        expect(res.body.tags.length).to.equal(0);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
+        done();
+      });
+  });
+});
+describe('Articles Search by Criteria', () => {
+  it('Should search for articles by tag****', (done) => {
+    chai.request(app)
+      .get('/api/articles?tag=fiction')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        done();
+      });
+  });
+  it('Should search for articles by title', (done) => {
+    chai.request(app)
+      .get('/api/articles?title=train')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        done();
+      });
+  });
+  it('Should search for articles by author', (done) => {
+    chai.request(app)
+      .get('/api/articles?author=Lumexata')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
+        done();
+      });
+  });
+  it('Should not return any search result for articles not found', (done) => {
+    chai.request(app)
+      .get('/api/articles?author=Lumexx')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
         done();
       });
   });

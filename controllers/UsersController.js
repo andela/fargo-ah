@@ -171,7 +171,7 @@ export default class UsersController {
   static async verifyEmail(req, res) {
     const { token } = req.params;
     try {
-      const decodedUserData = jwt.verify(token, process.env.SECRETE_KEY);
+      const decodedUserData = jwt.verify(token, process.env.SECRET_KEY);
       const userFound = await User.findOne({ where: { id: decodedUserData.id } });
       if (userFound) {
         if (userFound.isverified) {

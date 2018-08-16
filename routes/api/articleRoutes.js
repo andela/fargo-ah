@@ -9,7 +9,7 @@ import checkArticle from '../../middlewares/checkArticle';
 import { checkCount, articleExists } from '../../middlewares/checkUser';
 import getArticle from '../../middlewares/getArticle';
 import toggleFree from '../../middlewares/toggleFree';
-
+import searchForArticles from '../../middlewares/searchArticles';
 
 const router = Router();
 
@@ -44,7 +44,8 @@ router.get(
 router.get(
   '/articles',
   ParamsValidator.validatePageQuery,
-  ArticleControllers.listAllArticles
+  ArticleControllers.listAllArticles,
+  searchForArticles
 );
 router.post(
   '/articles/:slug/like',

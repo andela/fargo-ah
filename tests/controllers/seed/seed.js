@@ -15,6 +15,15 @@ const validArticleData = {
   }
 };
 
+const validArticleData2 = {
+  article: {
+    title: 'How to train your dragon',
+    description: 'Ever wonder how?',
+    body: 'You have to believe',
+    tagList: ['fiction']
+  }
+};
+
 const editedArticle = {
   article: {
     title: 'How to train your dragon right',
@@ -97,6 +106,7 @@ const userForPayment = {
 export default {
   validUser,
   validArticleData,
+  validArticleData2,
   dataWithNoTitle,
   dataWithNoDescription,
   dataWithNoBody,
