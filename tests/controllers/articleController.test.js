@@ -8,6 +8,7 @@ chai.use(chaiHttp);
 const {
   validUser,
   validArticleData,
+  validArticleData2,
   dataWithNoTitle,
   dataWithNoDescription,
   dataWithNoBody,
@@ -267,6 +268,75 @@ describe('Articles API endpoints', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body.message).to.equal('Article successfully deleted');
+        done();
+      });
+  });
+
+  it('Should create article with required fields for authenticated user', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send(validArticleData2)
+      .end((err, res) => {
+        createdArticle = res.body.article;
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object').to.have.property('article');
+        expect(createdArticle).to.be.an('object').to.have.property('slug');
+        expect(createdArticle.slug).to.be.a('string');
+        expect(createdArticle.title).to.equal(validArticleData.article.title);
+        expect(createdArticle.body).to.equal(validArticleData.article.body);
+        expect(createdArticle.description).to.equal(validArticleData.article.description);
+        expect(createdArticle.User).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
+        expect(createdArticle.User).to.have.property('bio');
+        expect(createdArticle.User).to.have.property('image');
+        done();
+      });
+  });
+  // Articles by search
+  it('Should not find articles by the wrong title', (done) => {
+    chai.request(app)
+      .get('/api/articles/?title=fiction')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
+        done();
+      });
+  });
+});
+describe('Articles Search by Criteria', () => {
+  it('Should search for articles by tag', (done) => {
+    chai.request(app)
+      .get('/api/articles?tag=fiction')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        done();
+      });
+  });
+  it('Should search for articles by title', (done) => {
+    chai.request(app)
+      .get('/api/articles?title=train')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        done();
+      });
+  });
+  it('Should search for articles by author', (done) => {
+    chai.request(app)
+      .get('/api/articles?author=Lumexat')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('These are the articles found');
+        done();
+      });
+  });
+  it('Should not return any search result for articles not found', (done) => {
+    chai.request(app)
+      .get('/api/articles?author=Lumexx')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object').to.have.property('message').to.equal('No article found for your search');
         done();
       });
   });

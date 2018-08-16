@@ -86,6 +86,7 @@ class ArticleController {
    * @returns {object} - the found article from database or empty if not found
   */
   static listAllArticles(req, res, next) {
+    if (req.query.author || req.query.tag || req.query.title) return next();
     return Article
       .findAll({
         include: [{
