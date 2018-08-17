@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     updatedCount: DataTypes.INTEGER,
     tagList: DataTypes.ARRAY(DataTypes.STRING),
+    categorylist: DataTypes.ARRAY(DataTypes.STRING),
     favorited: DataTypes.BOOLEAN,
     favoritesCount: DataTypes.INTEGER,
     imageUrl: DataTypes.STRING,

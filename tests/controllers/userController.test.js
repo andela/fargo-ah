@@ -109,8 +109,8 @@ describe('Tests for user controller', () => {
         .post('/api/users')
         .send({
           user: {
-            username: 'newuserByMe',
-            email: 'newuserByMe@register.com',
+            username: 'newuserbyme',
+            email: 'newuserbyme@register.com',
             password: 'password123'
           }
         })
@@ -126,14 +126,38 @@ describe('Tests for user controller', () => {
         });
     });
 
+    it('Should update profile if all required fields are entered', (done) => {
+      chai
+        .request(app)
+        .put('/api/profiles/newuserbyme')
+        .send({
+          user: {
+            username: 'Jacob',
+            lastname: 'knight',
+            firstname: 'peter',
+            bio:
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            image:
+              'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054'
+          }
+        })
+        .set('Authorization', `Bearer ${validToken}`)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.success).to.equal(true);
+        });
+      done();
+    });
+
     it('Return a 409 conflict on register when the email or username already exists', (done) => {
       chai
         .request(app)
         .post('/api/users')
         .send({
           user: {
-            username: 'newuserByMe',
-            email: 'newuserByMe@register.com',
+            username: 'newuserbyme',
+            email: 'newuserbyme@register.com',
             password: 'password123'
           }
         })
@@ -565,6 +589,7 @@ describe('Tests for user controller', () => {
         });
       done();
     });
+
     it('Should not login in a user with wrong password', (done) => {
       const verifiedUser = {
         user: {

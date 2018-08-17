@@ -1,7 +1,14 @@
 const validUser = {
   user: {
     email: 'olumide@yahoo.com',
-    username: 'Lumexat',
+    username: 'lumexat',
+    password: 'spirit2018',
+  }
+};
+
+const newUserlogin = {
+  user: {
+    email: 'newuserByMe@register.com',
     password: 'spirit2018',
   }
 };
@@ -11,7 +18,8 @@ const validArticleData = {
     title: 'How to train your dragon',
     description: 'Ever wonder how?',
     body: 'You have to believe',
-    tagList: ['reactjs', 'angularjs', 'dragons']
+    tagList: ['reactjs', 'angularjs', 'dragons'],
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -20,7 +28,8 @@ const validArticleData2 = {
     title: 'How to train your dragon',
     description: 'Ever wonder how?',
     body: 'You have to believe',
-    tagList: ['fiction']
+    tagList: ['fiction'],
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -31,7 +40,8 @@ const editedArticle = {
     body: 'You have to believe it to achieve it',
     tagList: ['reactjs', 'angularjs', 'dragons'],
     isPaidFor: true,
-    price: 2.30
+    price: 2.30,
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -39,7 +49,8 @@ const dataWithNoTitle = {
   article: {
     description: 'Ever wonder how?',
     body: 'You have to believe',
-    tagList: ['reactjs', 'angularjs', 'dragons']
+    tagList: ['reactjs', 'angularjs', 'dragons'],
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -47,7 +58,8 @@ const dataWithNoDescription = {
   article: {
     title: 'How to train your dragon',
     body: 'You have to believe',
-    tagList: ['reactjs', 'angularjs', 'dragons']
+    tagList: ['reactjs', 'angularjs', 'dragons'],
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -55,7 +67,8 @@ const dataWithNoBody = {
   article: {
     title: 'How to train your dragon',
     description: 'Ever wonder how?',
-    tagList: ['reactjs', 'angularjs', 'dragons']
+    tagList: ['reactjs', 'angularjs', 'dragons'],
+    categorylist: ['people', 'sports', 'culture']
   }
 };
 
@@ -107,6 +120,7 @@ export default {
   validUser,
   validArticleData,
   validArticleData2,
+  newUserlogin,
   dataWithNoTitle,
   dataWithNoDescription,
   dataWithNoBody,

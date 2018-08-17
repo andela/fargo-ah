@@ -124,7 +124,9 @@ export default class UsersController {
    * @returns {object} An object containing all the data related to the user if update successful
    */
   static editProfile(req, res, next) {
-    const { username, image, bio } = req.body.user;
+    const {
+      username, image, bio, firstname, lastname
+    } = req.body.user;
     User.findOne({ where: { username: req.params.username } })
       .then((user) => {
         if (!user || user.rowCount === 0) {
@@ -140,6 +142,8 @@ export default class UsersController {
             username,
             image,
             bio,
+            firstname,
+            lastname,
           }, {
             returning: true,
             where: { id: user.id }

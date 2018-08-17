@@ -19,11 +19,11 @@ class ArticleController {
   */
   static createArticle(req, res) {
     const {
-      title, description, body, tagList, imageData, isPaidFor, price
+      title, description, body, tagList, categorylist, imageData, isPaidFor, price
     } = req.body.article;
     const { userId } = req;
     const articleObject = {
-      title, description, body, tagList, imageData, isPaidFor, price, userId
+      title, description, body, tagList, categorylist, imageData, isPaidFor, price, userId
     };
     /**
      * check if image was provided in the request
@@ -87,7 +87,7 @@ class ArticleController {
   static listAllArticles(req, res, next) {
     const { page, limit } = req;
     let offset = null;
-    if (req.query.author || req.query.tag || req.query.title) return next();
+    if (req.query.author || req.query.tag || req.query.title || req.query.category) return next();
 
     if (page || limit) {
     // calculate offset

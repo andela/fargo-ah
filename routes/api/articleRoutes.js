@@ -10,6 +10,7 @@ import { checkCount, articleExists } from '../../middlewares/checkUser';
 import getArticle from '../../middlewares/getArticle';
 import toggleFree from '../../middlewares/toggleFree';
 import searchForArticles from '../../middlewares/searchArticles';
+import { listOfCategories } from '../../helpers/exports';
 
 const router = Router();
 
@@ -62,5 +63,6 @@ router.put(
 );
 
 router.get('/tags', ArticleControllers.getAllTags);
+router.get('/articles/list/categories', listOfCategories);
 
 export default router;
