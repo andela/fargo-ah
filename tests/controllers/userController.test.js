@@ -5,8 +5,8 @@ import app from '../../index';
 
 chai.use(chaiHttp);
 
-let authToken;
-const user = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTMzMDc3ODcyfQ.YibyD9L42qZB-mFpviFlVBFzXM9-dsnLLzh9Y48-63Y';
+let validToken;
+
 describe('Tests for user controller', () => {
   describe('POST api/users', () => {
     const data = {
@@ -104,7 +104,7 @@ describe('Tests for user controller', () => {
         .post('/api/users')
         .send(payload)
         .end((err, res) => {
-          authToken = res.body.user.token;
+          validToken = res.body.user.token;
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(200);
           expect(res.body).to.be.an('object');
@@ -494,7 +494,7 @@ describe('Tests for user controller', () => {
             image: 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054',
           }
         })
-        .set('Authorization', user)
+        .set('Authorization', `validToken ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(200);
@@ -531,7 +531,7 @@ describe('Tests for user controller', () => {
             image: 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054',
           }
         })
-        .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTMzMDc3ODcyfQ.YibyD9L42qZB-mFpviFlVBFzXM9-dsnLLzh9Y48-63Y')
+        .set('Authorization', `Bearer ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(401);
@@ -551,7 +551,7 @@ describe('Tests for user controller', () => {
             image: 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054',
           }
         })
-        .set('Authorization', user)
+        .set('Authorization', `Bearer ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(400);
@@ -571,7 +571,7 @@ describe('Tests for user controller', () => {
             image: 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054',
           }
         })
-        .set('Authorization', user)
+        .set('Authorization', `Bearer ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(400);
@@ -591,7 +591,7 @@ describe('Tests for user controller', () => {
             image: 'anewimage',
           }
         })
-        .set('Authorization', user)
+        .set('Authorization', `Bearer ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(400);
@@ -611,7 +611,7 @@ describe('Tests for user controller', () => {
             image: 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/15977554_1582808678414512_6741269562835437124_n.jpg?_nc_cat=0&oh=8fee46fdcaa8b427c292156d60d11d62&oe=5BCD4054',
           }
         })
-        .set('Authorization', user)
+        .set('Authorization', `Bearer ${validToken}`)
         .end((err, res) => {
           expect(err).to.equal(null);
           expect(res.statusCode).to.equal(400);
@@ -658,7 +658,7 @@ describe('Tests for user controller', () => {
     it('It should reset password', (done) => {
       chai.request(app)
         .put('/api/users/password/reset/edit')
-        .set('authorization', `Bearer ${authToken}`)
+        .set('authorization', `Bearer ${validToken}`)
         .send({
           user: {
             password: 'tester123',

@@ -6,16 +6,19 @@ import stubTransport from 'nodemailer-stub-transport';
 import { User } from '../models';
 
 
-/** Class representing all utility functions */
-export default class Utilities {
 /**
- * Converts payload to JWT
- * @param {Object} payload - Object to convert to JWT
- * @returns {string} token - JWT String created.
+ *  Class representing all utility functions
+ *
  */
+export default class Utilities {
+  /**
+   * Converts payload to JWT
+   * @param {Object} payload - Object to convert to JWT
+   * @returns {string} token - JWT String created.
+   */
   static signToken(payload) {
     try {
-      return jwt.sign(payload, process.env.JWT_TOKEN_SECRET, { expiresIn: '24h' });
+      return jwt.sign(payload, process.env.JWT_TOKEN_SECRET, { expiresIn: '24h' }).toString();
     } catch (err) {
       return err;
     }
@@ -136,5 +139,16 @@ export default class Utilities {
         return next();
       })
       .catch(next);
+  }
+
+  /**
+   * @function increaseCount
+  * @summary: A funtion to increase count
+  * each time an article is updated
+  * @param {Integer} count: input param
+  * @returns {Integer} number of count: for updating articles
+  */
+  static increaseCount(count) {
+    if (Number.isInteger(count)) return count + 1;
   }
 }
