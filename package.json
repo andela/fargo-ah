@@ -7,6 +7,7 @@
     "test:db:seed": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
     "pretest": "NODE_ENV=test npm run migrate:undo && NODE_ENV=test npm run migrate && NODE_ENV=test npm run test:db:seed",
     "test": "NODE_ENV=test nyc mocha tests/**/*.test.js  --compilers js:babel-register --timeout 30000 --require babel-polyfill --exit",
+    "build": "babel ./ -d dist --presets babel-preset-env --compilers js:babel-register --require babel-polyfill --ignore node_modules",
     "prestart": "babel ./ -d dist --presets=env --ignore node_modules",
     "start": "node ./dist/index.js",
     "dev": "DEBUG=index nodemon --exec babel-node --presets babel-preset-env ./index.js",
@@ -21,6 +22,8 @@
   "author": "Andela Simulations Programme",
   "license": "MIT",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "chai": "^4.1.2",
@@ -63,6 +66,8 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-istanbul": "^0.12.2",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "eslint": "^5.2.0",
     "eslint-config-airbnb": "^17.0.0",
