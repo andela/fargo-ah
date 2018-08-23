@@ -4,7 +4,7 @@ import ArticleControllers from '../../controllers/ArticleController';
 import validateArticle from '../../middlewares/validateArticle';
 import verifyToken from '../../middlewares/verifyToken';
 import { checkCount, articleExists } from '../../middlewares/checkUser';
-
+import searchForArticles from '../../middlewares/searchArticles';
 
 const router = Router();
 
@@ -17,6 +17,6 @@ router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.
 
 router.get('/articles/:slug', ArticleControllers.getArticle);
 
-router.get('/articles', ArticleControllers.listAllArticles);
+router.get('/articles', ArticleControllers.listAllArticles, searchForArticles);
 
 export default router;

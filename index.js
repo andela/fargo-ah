@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import passport from 'passport';
+import winston from 'winston';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
 import methodOverride from 'method-override';
@@ -94,6 +95,7 @@ app.use((err, req, res, next) => {
 
 // finally, let's start our server...
 const server = app.listen(process.env.PORT || 3000, () => {
+  winston.info(`Listening on port ${server.address().port}`);
   debug(`Listening on port ${server.address().port}`);
 });
 

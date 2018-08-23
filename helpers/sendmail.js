@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import mailtemplate from './mailtemplate';
 
-exports.sendEmail = async (userToBeVerified) => {
+exports.sendEmail = (userToBeVerified) => {
   const token = jwt.sign(
     { id: userToBeVerified.id },
     process.env.SECRETE_KEY, { expiresIn: 60 * process.env.VERIFYTOKEN_EXPIRY }
