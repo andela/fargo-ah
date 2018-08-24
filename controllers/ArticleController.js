@@ -19,11 +19,11 @@ class ArticleController {
   */
   static createArticle(req, res) {
     const {
-      title, description, body, tagList, imageData,
+      title, description, body, tagList, imageData, isPaidFor, price
     } = req.body.article;
     const { userId } = req;
     const articleObject = {
-      title, description, body, tagList, imageData, userId
+      title, description, body, tagList, imageData, isPaidFor, price, userId
     };
     /**
      * check if image was provided in the request
@@ -135,13 +135,17 @@ class ArticleController {
   * requests that fail
   */
   static editArticle(req, res, next) {
-    const { title, description, body } = req.body.article;
+    const {
+      title, description, body, isPaidFor, price
+    } = req.body.article;
     const { count } = req;
     const { slug } = req.params;
     return Article.update({
       title,
       description,
       body,
+      isPaidFor,
+      price,
       updatedCount: Utilities.increaseCount(count)
     }, {
       where: {

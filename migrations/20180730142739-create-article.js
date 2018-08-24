@@ -51,6 +51,12 @@ module.exports = {
         as: 'userId',
       },
     },
+    isPaidFor: {
+      type: Sequelize.BOOLEAN
+    },
+    price: {
+      type: Sequelize.DECIMAL
+    }
   }),
   down: (queryInterface/* , Sequelize */) => {
     queryInterface.dropTable('Articles');
