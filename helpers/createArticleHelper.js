@@ -2,7 +2,7 @@ import generateUniqueSlug from './generateUniqueSlug';
 import { Article, User, Follow } from '../models';
 import sendEmail from './sendEmail';
 import { sendNotification, userData } from '../notification/index';
-
+import calculateReadTime from './calculateReadTime';
 
 /**
  * @description an helper function to help create article in database
@@ -16,9 +16,9 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
   let authorId, author, articleTitle, articleSlug, createdArticle;
   articleObject.price = (articleObject.price) ? articleObject.price.toFixed(2) : 0;
   const {
-    title, description, body, tagList, userId, isPaidFor, price,
+    title, description, body, tagList, userId, isPaidFor, price, wordCount
   } = articleObject;
-
+  const readTime = calculateReadTime(wordCount);
   return Article
     .create({
       slug: generateUniqueSlug(title),
@@ -30,6 +30,7 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
       price,
       tagList,
       imageUrl,
+      readTime
     })
     .then(article => Article.findById(article.id, {
       include: [{
