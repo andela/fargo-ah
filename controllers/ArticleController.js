@@ -59,7 +59,6 @@ class ArticleController {
           model: User,
           attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
         }],
-        attributes: { exclude: ['userId'] }
       })
       .then((article) => {
         // if the article does not exist
@@ -79,31 +78,48 @@ class ArticleController {
   }
 
   /**
-   * get all articles created
+   * get all articles created and use the query
+   * if provided to implement pagination
    * @param {object} req - request object
    * @param {object} res - response object
    * @param {function} next - next function
    * @returns {object} - the found article from database or empty if not found
   */
   static listAllArticles(req, res, next) {
+    const { page, limit } = req;
+    let offset = null;
+
+    if (page || limit) {
+      // calculate offset
+      offset = limit * (page - 1);
+    }
+
     return Article
       .findAll({
         include: [{
           model: User,
           attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
         }],
-        attributes: { exclude: ['userId'] }
+        offset,
+        limit,
       })
       .then((articles) => {
-        // check if there was no article created
         if (articles.length === 0) {
+        /** check if there was no article created
+         *  for the page query
+        */
+          const message = page ? 'articles limit exceeded'
+            : 'Sorry, no articles created';
           return res.status(200).json({
-            message: 'No articles created',
+            message,
             articles,
+            articlesCount: articles.length
           });
         }
-
-        return res.status(200).json({ articles, articlesCount: articles.length });
+        return res.status(200).json({
+          articles,
+          articlesCount: articles.length
+        });
       })
       .catch(next);
   }

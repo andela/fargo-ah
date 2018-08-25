@@ -41,3 +41,6 @@ dist/
 
 #txt
 txt.txt
+
+#VS Code
+.vscode

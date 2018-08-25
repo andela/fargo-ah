@@ -30,7 +30,6 @@ const createArticleHelper = (res, articleObject, imageUrl = null) => {
         model: User,
         attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
       }],
-      attributes: { exclude: ['userId'] }
     }))
     .then(article => res.status(201).json({ article }));
 };

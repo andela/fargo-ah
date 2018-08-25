@@ -41,4 +41,25 @@ export default class ParamsValidator {
     }
     next();
   }
+
+  /**
+   * Checks the  page params provided for integer 1 and above
+   *  and assign a default value when less than 1
+   * @param {string} req - The request to be validated
+   * @param {string} res - The response from validation
+   * @param {string} next - The next function
+   * @returns {undefined}
+   */
+  static validatePageQuery(req, res, next) {
+    let { page, limit } = req.query;
+
+    if (page || limit) {
+      page = Number(page);
+      limit = Number(limit);
+
+      req.page = (page < 1 || !Number.isInteger(page)) ? 1 : page;
+      req.limit = (limit < 1 || !Number.isInteger(limit)) ? 10 : limit;
+    }
+    next();
+  }
 }

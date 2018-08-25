@@ -27,6 +27,7 @@ passport.deserializeUser(((user, done) => {
 // Create global app object
 const app = express();
 passportConfig(app);
+
 app.use(cors());
 
 // Normal express config defaults;
