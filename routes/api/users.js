@@ -8,6 +8,7 @@ import validator from '../../middlewares/ParamsValidator';
 import inputValidator from '../../middlewares/inputValidator';
 import { resendVerificationEmail } from '../../helpers/exports';
 import { checkIfUserIsVerified } from '../../middlewares/checkIfUserIsVerified';
+import getUser from '../../middlewares/getUser';
 
 const router = Router();
 
@@ -32,5 +33,29 @@ router.post('/users', validateSignup, UsersController.registerUser);
 router.post('/users/login', UsersController.login);
 router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
 router.put('/users/password/reset/edit', inputValidator.validatePassword, validateToken, utils.resetPassword);
+
+router.post(
+  '/profiles/:username/follow',
+  validateToken,
+  validator.validateUsername,
+  getUser, UsersController.follow
+);
+
+router.get(
+  '/profiles/following/view',
+  validateToken, UsersController.getAllAmFollowing
+);
+
+router.get(
+  '/profiles/follower/view',
+  validateToken, UsersController.getAllMyFollowers
+);
+
+router.delete(
+  '/profiles/:username/follow',
+  validateToken,
+  validator.validateUsername,
+  getUser, UsersController.unfollow
+);
 
 export default router;

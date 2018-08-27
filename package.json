@@ -16,7 +16,9 @@
     "migrate": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:migrate",
     "migrate:undo": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:migrate:undo:all",
     "seed:newuser": "NODE_ENV=test ./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
-    "seed:newuser:undo": "NODE_ENV=test ./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:undo:all"
+    "seed:newuser:undo": "NODE_ENV=test ./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:undo:all",
+    "seed": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
+    "migrate:redo": "npm run migrate:undo && npm run migrate"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -60,6 +62,7 @@
     "slugify": "^1.3.0"
   },
   "devDependencies": {
+    "@types/dotenv": "^4.0.3",
     "babel-cli": "^6.26.0",
     "babel-istanbul": "^0.12.2",
     "babel-preset-env": "^1.7.0",

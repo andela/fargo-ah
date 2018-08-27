@@ -31,9 +31,6 @@ module.exports = {
     image: {
       type: Sequelize.STRING,
     },
-    following: {
-      type: Sequelize.STRING,
-    },
     favorites: {
       type: Sequelize.STRING,
     },
