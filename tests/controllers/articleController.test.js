@@ -269,7 +269,6 @@ describe('Articles API endpoints', () => {
       .send(editedArticle)
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res).to.have.status(200);
         expect(res.body.article.title).to.equal(editedArticle.article.title);
         expect(res.body.article.body).to.equal(editedArticle.article.body);
         expect(res.body.article.description).to.equal(editedArticle.article.description);
@@ -326,7 +325,53 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
-
+  it('Should allow a user like an article successfully', (done) => {
+    chai.request(app)
+      .put('/api/articles/1/like')
+      .set('authorization', `Bearer ${validToken}`)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('success');
+        expect(res.body).to.have.property('totalLikes').to.equal(1);
+        done();
+      });
+  });
+  it('Should allow a user unlike an article already liked successfully', (done) => {
+    chai.request(app)
+      .put('/api/articles/1/like')
+      .set('authorization', `Bearer ${validToken}`)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('success');
+        expect(res.body).to.have.property('totalLikes').to.equal(0);
+        done();
+      });
+  });
+  it('Should not allow a user like an article with non-integer article id in the parameter', (done) => {
+    chai.request(app)
+      .put('/api/articles/fgh/like')
+      .set('authorization', `Bearer ${validToken}`)
+      .end((err, res) => {
+        expect(res).to.have.status(406);
+        expect(res.body).to.be.an('object');
+        expect(res.body.errors.id)
+          .to.include('The parameter id must be an integer.');
+        done();
+      });
+  });
+  it('Should not allow a user like an article with non-existing article id in the parameter', (done) => {
+    chai.request(app)
+      .put('/api/articles/50/like')
+      .set('authorization', `Bearer ${validToken}`)
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body.errors.body).to.be.an('array');
+        expect(res.body.errors.body[0]).to.equal('Ooops! the article cannot be found.');
+        done();
+      });
+  });
   it('Should delete an article created by a user', (done) => {
     chai.request(app)
       .delete(`/api/articles/${createdArticle.slug}`)

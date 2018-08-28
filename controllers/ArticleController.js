@@ -1,6 +1,7 @@
+import { Op } from 'sequelize';
 import cloudinary from '../config/cloudinary';
 import Utilities from '../helpers/utilities';
-import { Article, User } from '../models';
+import { Article, User, Like } from '../models';
 import createArticleHelper from '../helpers/createArticleHelper';
 
 /**
@@ -59,6 +60,7 @@ class ArticleController {
           model: User,
           attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
         }],
+        attributes: { exclude: ['userId'] }
       })
       .then((article) => {
         // if the article does not exist
@@ -90,7 +92,7 @@ class ArticleController {
     let offset = null;
 
     if (page || limit) {
-      // calculate offset
+    // calculate offset
       offset = limit * (page - 1);
     }
 
@@ -105,9 +107,9 @@ class ArticleController {
       })
       .then((articles) => {
         if (articles.length === 0) {
-        /** check if there was no article created
-         *  for the page query
-        */
+          /** check if there was no article created
+          *  for the page query
+          */
           const message = page ? 'articles limit exceeded'
             : 'Sorry, no articles created';
           return res.status(200).json({
@@ -172,6 +174,70 @@ class ArticleController {
       where: { slug }
     })
       .then(() => res.status(200).json({ message: 'Article successfully deleted' }))
+      .catch(next);
+  }
+
+  /**
+  * @function CountLikes
+  * @summary: controller to handle counting likes
+  * @param {object} res
+  * @param {integer} id
+  * @returns {object} newOrFoundUser
+  * @memberof AuthController
+  */
+  static countLikes(res, id) {
+    Like.findAndCountAll({
+      where: {
+        [Op.and]: [
+          { articleId: id }
+        ]
+      }
+    })
+      .then((articleLikes) => {
+        res.status(200).json({
+          success: 'true',
+          totalLikes: articleLikes.count,
+        });
+      });
+  }
+
+
+  /**
+  * @function likeArticle
+  * @summary: API controller to handle requests to like an article
+  * @param {object} req: request object
+  * @param {object} res: response object
+  * @param {object} next: response object
+  * @returns {object} api response: article object for
+  * successful requests, or error object for
+  * requests that fail
+  */
+  static likeArticle(req, res, next) {
+    const { userId } = req;
+    const { id } = req.params;
+    Like.find({
+      where: {
+        userId, articleId: id
+      }
+    })
+      .then((like) => {
+        if (!like) {
+          Like.create({
+            articleId: id,
+            userId,
+          })
+            .then(() => {
+              ArticleController.countLikes(res, id);
+            });
+        } else {
+          Like.destroy({
+            where: { id: like.id }
+          })
+            .then(() => {
+              ArticleController.countLikes(res, id);
+            });
+        }
+      })
       .catch(next);
   }
 }
