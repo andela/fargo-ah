@@ -26,4 +26,6 @@ router.post('/articles/:slug/like', verifyToken, ArticleControllers.likeArticle)
 
 router.put('/articles/:id/like', verifyToken, idIsInteger, checkArticle, ArticleControllers.likeArticle);
 
+router.get('/tags', ArticleControllers.getAllTags);
+
 export default router;

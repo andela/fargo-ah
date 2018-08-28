@@ -241,6 +241,39 @@ class ArticleController {
       })
       .catch(next);
   }
+
+  /**
+  * @function getAllTags
+  * @summary: API controller to get all tags
+  * @param {object} req: request object
+  * @param {object} res: response object
+  * @param {object} next: response object
+  * @returns {object} response object with status code
+  */
+  static getAllTags(req, res, next) {
+    return Article.findAll({
+      attributes: { exclude: ['id', 'title', 'description', 'body', 'slug', 'updatedCount', 'createdAt', 'updatedAt', 'favorited', 'favoritesCount', 'imageUrl', 'userId'] },
+    })
+      .then((tagList) => {
+      // create an array of all tags
+        const tags = tagList.map(tag => tag.tagList)
+          .reduce((acc, nextValue) => acc.concat(nextValue), []);
+
+        // make a unique array of tags
+        const uniqueTags = new Set(tags);
+
+        if (uniqueTags.size === 0) {
+          return res.status(200).json({
+            message: 'No tags created',
+            tags: uniqueTags,
+          });
+        }
+        return res.status(200).json({
+          tags: uniqueTags,
+        });
+      })
+      .catch(next);
+  }
 }
 
 export default ArticleController;

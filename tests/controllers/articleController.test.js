@@ -465,6 +465,18 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
+
+  it('Should get all tags created', (done) => {
+    chai.request(app)
+      .get('/api/tags')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.tags.length).to.not.equal(0);
+        done();
+      });
+  });
+
   it('Should delete an article created by a user', (done) => {
     chai.request(app)
       .delete(`/api/articles/${createdArticle.slug}`)
@@ -477,8 +489,21 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
+
   it('Should count how long it takes to read an article', (done) => {
     assert.equal(countReadTime(460), 2);
     done();
+  });
+
+  it('Should return an empty array when no tags are created', (done) => {
+    chai.request(app)
+      .get('/api/tags')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.message).to.equal('No tags created');
+        expect(res.body.tags.length).to.equal(0);
+        done();
+      });
   });
 });
