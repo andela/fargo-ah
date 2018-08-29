@@ -106,7 +106,7 @@ export default class UsersController {
   static getProfile(req, res, next) {
     User.findOne({ where: { username: req.params.username } })
       .then((user) => {
-        if (!user || user.rowCount < 1) {
+        if (!user) {
           return res.status(404).json({
             success: false,
             errors: {

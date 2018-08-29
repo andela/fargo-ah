@@ -27,16 +27,21 @@ module.exports = (sequelize, DataTypes) => {
   Article.associate = (models) => {
     // associations can be defined here
 
-    Article.belongsTo(
-      models.User,
-      {
-        foreignKey: 'userId',
-        onDelete: 'CASCADE',
-      }
-    );
+    Article.belongsTo(models.User, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+    });
     Article.hasMany(models.Like, {
       foreignKey: 'articleId',
       as: 'likes',
+    });
+    Article.belongsTo(models.User, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+    });
+    Article.hasMany(models.Comment, {
+      foreignKey: 'articleId',
+      as: 'comments',
     });
   };
   return Article;

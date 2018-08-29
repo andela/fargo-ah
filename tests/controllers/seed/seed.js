@@ -48,6 +48,34 @@ const dataWithNoBody = {
   }
 };
 
+const validComment = {
+  comment: {
+    body: 'This is the first comment of the first level',
+  }
+};
+
+const invalidComment = {
+  comment: {
+    body: '',
+  }
+};
+
+const commentWithoutBody = {
+  comment: {}
+};
+
+const validReply = {
+  comment: {
+    body: 'This is the first comment of the first level',
+  }
+};
+
+const commentNotString = {
+  comment: {
+    body: 1,
+  }
+};
+
 export default {
   validUser,
   validArticleData,
@@ -55,4 +83,9 @@ export default {
   dataWithNoDescription,
   dataWithNoBody,
   editedArticle,
+  validComment,
+  validReply,
+  invalidComment,
+  commentWithoutBody,
+  commentNotString,
 };

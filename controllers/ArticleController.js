@@ -21,9 +21,7 @@ class ArticleController {
     const {
       title, description, body, tagList, imageData,
     } = req.body.article;
-
     const { userId } = req;
-
     const articleObject = {
       title, description, body, tagList, imageData, userId
     };
@@ -47,9 +45,9 @@ class ArticleController {
    * get an article using slug as query parameter
    * @param {object} req - request object
    * @param {object} res - response object
-   * @param {function} next - next function
+   * @param {function} next - to handle errors
    * @returns {object} - the found article from database or error if not found
-  */
+   */
   static getArticle(req, res, next) {
     const { slug } = req.params;
 
@@ -84,9 +82,9 @@ class ArticleController {
    * if provided to implement pagination
    * @param {object} req - request object
    * @param {object} res - response object
-   * @param {function} next - next function
+   * @param {function} next - to handle errors
    * @returns {object} - the found article from database or empty if not found
-  */
+   */
   static listAllArticles(req, res, next) {
     const { page, limit } = req;
     let offset = null;
@@ -131,7 +129,7 @@ class ArticleController {
   * @summary: API controller to handle requests to edit an article
   * @param {object} req: request object
   * @param {object} res: response object
-  * @param {function} next - next function
+   * @param {function} next - to handle errors
   * @returns {object} api response: article object for
   * successful requests, or error object for
   * requests that fail
