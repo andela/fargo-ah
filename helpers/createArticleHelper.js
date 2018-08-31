@@ -11,8 +11,9 @@ import { Article, User } from '../models';
  */
 
 const createArticleHelper = (res, articleObject, imageUrl = null) => {
+  articleObject.price = (articleObject.price) ? articleObject.price.toFixed(2) : 0;
   const {
-    title, description, body, tagList, userId
+    title, description, body, tagList, userId, isPaidFor, price,
   } = articleObject;
 
   return Article
@@ -22,6 +23,8 @@ const createArticleHelper = (res, articleObject, imageUrl = null) => {
       description,
       body,
       userId,
+      isPaidFor,
+      price,
       tagList,
       imageUrl,
     })

@@ -21,7 +21,14 @@ module.exports = (sequelize, DataTypes) => {
     tagList: DataTypes.ARRAY(DataTypes.STRING),
     favorited: DataTypes.BOOLEAN,
     favoritesCount: DataTypes.INTEGER,
-    imageUrl: DataTypes.STRING
+    imageUrl: DataTypes.STRING,
+    isPaidFor: {
+      type: DataTypes.BOOLEAN
+    },
+    price: {
+      type: DataTypes.DECIMAL,
+      defaultValue: 0,
+    }
   }, {});
 
   Article.associate = (models) => {

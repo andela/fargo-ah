@@ -156,7 +156,83 @@ describe('Articles API endpoints', () => {
         done();
       });
   });
+  it('Should not create article if Article is to be paid for, but price is not set', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send({
+        article: {
+          title: 'How to train your dragon',
+          description: 'Ever wonder how?',
+          body: 'You have to believe',
+          price: '',
+          isPaidFor: true
+        }
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.errors.body[0]).to.equal('Article is to be paid for, but price is not set');
+        done();
+      });
+  });
 
+  it('Should not create article if price of article is less than the lower price boundary', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send({
+        article: {
+          title: 'How to train your dragon',
+          description: 'Ever wonder how?',
+          body: 'You have to believe',
+          price: 0.15,
+          isPaidFor: true
+        }
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.errors.body[0]).to.equal('Price can only be between $0.28 to $5.53');
+        done();
+      });
+  });
+  it('Should not create article if price of article is more than the higher price boundary', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send({
+        article: {
+          title: 'How to train your dragon',
+          description: 'Ever wonder how?',
+          body: 'You have to believe',
+          price: 15.15,
+          isPaidFor: true
+        }
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.errors.body[0]).to.equal('Price can only be between $0.28 to $5.53');
+        done();
+      });
+  });
+  it('Should not create article if price is not a number', (done) => {
+    chai.request(app)
+      .post('/api/articles')
+      .set('authorization', `Bearer ${validToken}`)
+      .send({
+        article: {
+          title: 'How to train your dragon',
+          description: 'Ever wonder how?',
+          body: 'You have to believe',
+          price: 'two dollars',
+          isPaidFor: true
+        }
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.errors.body[0]).to.equal('Article price must be in figure');
+        done();
+      });
+  });
   it('Should return error for invalid slug parameter', (done) => {
     chai.request(app)
       .get('/api/articles/chaihttp-13455')
