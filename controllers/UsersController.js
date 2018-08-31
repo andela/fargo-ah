@@ -177,7 +177,7 @@ export default class UsersController {
   static async verifyEmail(req, res) {
     const { token } = req.params;
     try {
-      const decodedUserData = jwt.verify(token, process.env.SECRETE_KEY);
+      const decodedUserData = jwt.verify(token, process.env.SECRET_KEY);
       const userFound = await User.findOne({ where: { id: decodedUserData.id } });
       if (userFound) {
         if (userFound.isverified) {
@@ -190,9 +190,15 @@ export default class UsersController {
         }
       }
       User.update({ isverified: true }, { where: { id: decodedUserData.id } });
-      return res.status(200).json({ message: 'The user has been verified' });
+      return res.status(200).json({
+        status: true,
+        message: {
+          body: ['The user has been verified']
+        }
+      });
     } catch (err) {
       return res.status(400).json({
+        success: false,
         errors: { body: ['Your verification link has expired or invalid'] }
       });
     }
@@ -319,7 +325,8 @@ export default class UsersController {
       if (user.length === 0) {
         return res.status(200).json({
           success: true,
-          message: 'No followers yet'
+          totalFollower: 0,
+          user: ['No followers yet']
         });
       }
       res.status(200).json({

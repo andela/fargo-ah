@@ -9,9 +9,12 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import debugLog from 'debug';
 import expressValidator from 'express-validator';
+import swaggerUI from 'swagger-ui-express';
 import { } from 'dotenv/config';
 import passportConfig from './config/passport';
 import routes from './routes';
+import swaggerDoc from './swaggerDoc.json';
+
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -26,8 +29,15 @@ passport.deserializeUser(((user, done) => {
 // Create global app object
 const app = express();
 passportConfig(app);
+const corOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
-app.use(cors());
+app.use(cors(corOptions));
+
 
 // Normal express config defaults;
 app.use(morgan('dev'));
@@ -53,8 +63,10 @@ if (!isProduction) {
 }
 
 app.use(expressValidator());
+
 app.use(routes);
 
+app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('You are not where you intend to be, please input a valid path');
@@ -63,7 +75,6 @@ app.use((req, res, next) => {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (!isProduction) {

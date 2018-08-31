@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import utils from '../../helpers/utilities';
 import validateSignup from '../../middlewares/validateSignup';
+import validateLogin from '../../middlewares/validateLogin';
 import UsersController from '../../controllers/UsersController';
 import validateProfile from '../../middlewares/validateProfile';
 import validateToken from '../../middlewares/verifyToken';
@@ -15,7 +16,11 @@ const router = Router();
 router.get('/users/verify/:token', UsersController.verifyEmail);
 router.post('/users/reverify', inputValidator.validateEmail, resendVerificationEmail);
 router.post('/users', validateSignup, UsersController.registerUser);
-router.post('/users/login', checkIfUserIsVerified, UsersController.login);
+router.post(
+  '/users/login', validateLogin,
+  checkIfUserIsVerified,
+  UsersController.login,
+);
 router.get(
   '/profiles/:username',
   validator.validateUsername,
@@ -29,8 +34,6 @@ router.put(
   validateProfile,
   UsersController.editProfile
 );
-router.post('/users', validateSignup, UsersController.registerUser);
-router.post('/users/login', UsersController.login);
 router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
 router.put('/users/password/reset/edit', inputValidator.validatePassword, validateToken, utils.resetPassword);
 

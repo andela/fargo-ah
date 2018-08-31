@@ -94,7 +94,12 @@ export default class Utilities {
       if (error) {
         return next(error.message);
       }
-      res.status(200).json({ message: 'Email sent successfully' });
+      res.status(200).json({
+        status: false,
+        message: {
+          body: ['Email sent successfully']
+        }
+      });
     });
   }
 
@@ -111,7 +116,9 @@ export default class Utilities {
         .then(() => {
           res.status(200).json({
             success: true,
-            message: 'Password reset successful!'
+            message: {
+              body: ['Password reset successful!']
+            }
           });
         })
         .catch(next);
@@ -132,7 +139,7 @@ export default class Utilities {
       }
     })
       .then((user) => {
-        if (!user) return res.status(404).json({ errors: { body: ['email does not exist'] } });
+        if (!user) return res.status(404).json({ success: true, errors: { body: ['email does not exist'] } });
         req.body.user.username = user.username;
         const { id } = user;
         req.body.token = jwt.sign({ id }, process.env.JWT_TOKEN_SECRET, { expiresIn: '40m' });

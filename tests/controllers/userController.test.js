@@ -22,7 +22,7 @@ describe('Tests for user controller', () => {
         .send(data)
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].emailError).to.equal('Invalid email format');
+          expect(res.body.errors.body[0].emailError).to.equal('Invalid email format');
           done();
         });
     });
@@ -34,7 +34,7 @@ describe('Tests for user controller', () => {
         .send(data)
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[1].usernameError).to.equal('username cannot be empty');
+          expect(res.body.errors.body[1].usernameError).to.equal('username cannot be empty');
           done();
         });
     });
@@ -52,7 +52,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].passwordError)
+          expect(res.body.errors.body[0].passwordError)
             .to.equal('Password must not be less than 8 characters');
           done();
         });
@@ -65,7 +65,7 @@ describe('Tests for user controller', () => {
         .send(data)
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].emailError).to.equal('Invalid email format');
+          expect(res.body.errors.body[0].emailError).to.equal('Invalid email format');
           done();
         });
     });
@@ -77,7 +77,7 @@ describe('Tests for user controller', () => {
         .send(data)
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[1].usernameError).to.equal('username cannot be empty');
+          expect(res.body.errors.body[1].usernameError).to.equal('username cannot be empty');
           done();
         });
     });
@@ -89,7 +89,7 @@ describe('Tests for user controller', () => {
         .send(data)
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[2].passwordError).to.equal('password must be alphanumeric');
+          expect(res.body.errors.body[2].passwordError).to.equal('password must be alphanumeric');
           done();
         });
     });
@@ -176,7 +176,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].passwordError).to.equal('Password cannot be empty');
+          expect(res.body.errors.body[0].passwordError).to.equal('Password cannot be empty');
           done();
         });
     });
@@ -194,7 +194,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].usernameError)
+          expect(res.body.errors.body[0].usernameError)
             .to.equal('username must not be less than 5 characters');
           done();
         });
@@ -211,11 +211,10 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(err).to.equal(null);
-          expect(res.statusCode).to.equal(401);
+          expect(res.statusCode).to.equal(400);
           expect(res.body).to.be.an('object');
-          expect(res.body.success).to.equal(false);
           expect(res.body.errors.body).to.be.an('array');
-          expect(res.body.errors.body[0]).to.equal('Authentication failed');
+          expect(res.body.errors.body[0].emailError).to.equal('Invalid email format');
           done();
         });
     });
@@ -360,7 +359,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
-          expect(res.body.error.body[0].emailError).to.equal('Email cannot be empty');
+          expect(res.body.errors.body[0].emailError).to.equal('Email cannot be empty');
           done();
         });
     });
@@ -723,7 +722,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.equal(res.body.message, 'Email sent successfully');
+          assert.equal(res.body.message.body, 'Email sent successfully');
           done();
         });
     });
@@ -739,7 +738,7 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.equal(res.body.message, 'Password reset successful!');
+          assert.equal(res.body.message.body, 'Password reset successful!');
           done();
         });
     });

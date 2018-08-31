@@ -147,7 +147,7 @@ exports.emailTemplate = link => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Tr
       background-color: #FF3665;
     }
     .button--blue {
-      background-color: #414EF9;
+      background-color: #27494a;
     }
     /*Media Queries ------------------------------ */
     @media only screen and (max-width: 600px) {

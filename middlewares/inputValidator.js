@@ -13,7 +13,7 @@ export default class userValidator {
   static validateEmail(req, res, next) {
     const checkEmail = validateUser.validateEmail(req.body.user.email);
     if (checkEmail.error) {
-      return res.status(422).json({ errors: { body: [checkEmail.error] } });
+      return res.status(422).json({ status: false, errors: { body: [checkEmail.error] } });
     }
     next();
   }
@@ -29,7 +29,7 @@ export default class userValidator {
   static validatePassword(req, res, next) {
     const checkPassword = validateUser.validatePassword(req.body.user.password);
     if (checkPassword.error) {
-      return res.status(400).json({ errors: { body: [checkPassword.error] } });
+      return res.status(400).json({ status: false, errors: { body: [checkPassword.error] } });
     }
     next();
   }

@@ -26,9 +26,13 @@ exports.sendEmail = async (userToBeVerified) => {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
+      secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        type: 'OAuth2',
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        // user: process.env.EMAIL_USER,
+        // pass: process.env.EMAIL_PASS
       }
     });
     // setup email data with unicode symbols

@@ -10,6 +10,7 @@ exports.resendVerificationEmail = async (req, res) => {
 
     if (usertoBeVerified === null || usertoBeVerified === 'null') {
       return res.status(400).json({
+        status: false,
         errors: {
           body: ['You have entered an unregistered email address']
         }
@@ -17,6 +18,7 @@ exports.resendVerificationEmail = async (req, res) => {
     }
     if (usertoBeVerified && usertoBeVerified.isverified === true) {
       return res.status(400).json({
+        status: false,
         errors: {
           body: ['Your account has already been verified']
         }
@@ -25,6 +27,7 @@ exports.resendVerificationEmail = async (req, res) => {
 
     sendVerificationEmail.sendEmail(usertoBeVerified);
     res.status(200).json({
+      status: true,
       message: {
         body: ['A verification email has been sent to you']
       }
