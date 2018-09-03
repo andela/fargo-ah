@@ -7,7 +7,7 @@ exports.checkIfUserIsVerified = async (req, res, next) => {
     return res.status(400).json({
       success: false,
       errors: {
-        body: ['You account has not been activated'],
+        body: ['Your account has not been activated'],
       }
     });
   }

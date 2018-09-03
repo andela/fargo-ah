@@ -1,8 +1,10 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
+
 import app from '../../index';
 import seedData from './seed/seed';
+import sendEmail from '../../helpers/sendEmail';
 
 chai.use(chaiHttp);
 const {
@@ -18,6 +20,7 @@ let validToken, createdArticle;
 
 
 describe('Articles API endpoints', () => {
+  let articleSlug;
   it('Should get an empty array for no articles', (done) => {
     chai.request(app)
       .get('/api/articles')
@@ -70,6 +73,7 @@ describe('Articles API endpoints', () => {
       .send(validArticleData)
       .end((err, res) => {
         createdArticle = res.body.article;
+        articleSlug = createdArticle.slug;
         expect(res).to.have.status(201);
         expect(res.body).to.be.an('object').to.have.property('article');
         expect(createdArticle).to.be.an('object').to.have.property('slug');
@@ -83,6 +87,18 @@ describe('Articles API endpoints', () => {
         expect(createdArticle.User).to.have.property('image');
         done();
       });
+  });
+
+  it('should not send an email if invalid email is provided', (done) => {
+    const emailData = {
+      email: 'rossidiuebr@gmail.com',
+      slug: articleSlug,
+      name: 'Nwanna'
+    };
+    sendEmail(emailData.email, emailData.name, emailData.slug, (callback) => {
+      expect(callback).to.equal('Mail address not found');
+      done();
+    });
   });
 
   it('Should not create article with missing title field for authenticated user', (done) => {
@@ -267,7 +283,6 @@ describe('Articles API endpoints', () => {
       .get('/api/articles')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        // expect(res.body.articles).to.be.an('array').with.lengthOf(1);
         expect(res.body.articles).to.be.an('array');
         expect(res.body.articlesCount).to.equal(res.body.articles.length);
         done();
@@ -369,7 +384,7 @@ describe('Articles API endpoints', () => {
       });
   });
 
-  it('Should update count to 1 after updating an article', (done) => {
+  it('Should update count to 2 after updating an article twice', (done) => {
     chai.request(app)
       .put(`/api/articles/${createdArticle.slug}`)
       .set('authorization', `Bearer ${validToken}`)
@@ -381,7 +396,7 @@ describe('Articles API endpoints', () => {
       });
   });
 
-  it('Should update count to 2 after updating an article', (done) => {
+  it('Should update count to 3 after updating an article three times', (done) => {
     chai.request(app)
       .put(`/api/articles/${createdArticle.slug}`)
       .set('authorization', `Bearer ${validToken}`)

@@ -8,7 +8,7 @@ const getUser = (req, res, next) => {
   } else {
     whereField = { id: req.userId };
   }
-  db.User.find({ where: whereField })
+  User.find({ where: whereField })
     .then((user) => {
       if (!user) {
         return res.status(404).json({

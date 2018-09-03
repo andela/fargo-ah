@@ -37,7 +37,6 @@ class ArticleController {
         .catch(() => createArticleHelper(res, articleObject));
     }
 
-    // if there no image was provided go ahead to create the article
     return createArticleHelper(res, articleObject);
   }
 

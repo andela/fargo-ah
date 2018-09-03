@@ -257,7 +257,8 @@ describe('Tests for user controller', () => {
           expect(res.body).to.be.an('object');
           expect(res.body.success).to.equal(false);
           expect(res.body.errors.body).to.be.an('array');
-          expect(res.body.errors.body[0]).to.equal('You account has not been activated');
+          expect(res.body.errors.body[0])
+            .to.equal('Your account has not been activated');
           done();
         });
     });
