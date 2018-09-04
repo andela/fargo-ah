@@ -10,7 +10,7 @@ exports.sendEmail = (userToBeVerified) => {
   );
 
   // create template link
-  const templateLink = `${process.env.URL_HOST}${token}`;
+  const templateLink = `${process.env.URL_HOST}${token}/`;
   const htmlTempate = mailtemplate.emailTemplate(templateLink);
   const mailOptions = {
     from: `"Authors haven" <${process.env.NO_REPLY_MAIL}>`,
@@ -27,9 +27,14 @@ exports.sendEmail = (userToBeVerified) => {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+      },
+      transportMethod: 'SMTP',
+      tls: {
+        rejectUnauthorized: false
       }
     });
     // setup email data with unicode symbols

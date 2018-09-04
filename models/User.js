@@ -31,9 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         type: DataTypes.STRING
       },
-      favorites: {
-        type: DataTypes.STRING
-      }
     },
     {}
   );

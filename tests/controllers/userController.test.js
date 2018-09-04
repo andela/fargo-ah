@@ -236,11 +236,10 @@ describe('Tests for user controller', () => {
         })
         .end((err, res) => {
           expect(err).to.equal(null);
-          expect(res.statusCode).to.equal(401);
+          expect(res.statusCode).to.equal(400);
           expect(res.body).to.be.an('object');
-          expect(res.body.success).to.equal(false);
           expect(res.body.errors.body).to.be.an('array');
-          expect(res.body.errors.body[0]).to.equal('Authentication failed');
+          expect(res.body.errors.body[0].emailError).to.equal('Invalid email format');
           done();
         });
     });

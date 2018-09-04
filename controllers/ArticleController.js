@@ -90,14 +90,19 @@ class ArticleController {
     if (req.query.author || req.query.tag || req.query.title || req.query.category) return next();
 
     if (page || limit) {
-    // calculate offset
+      // calculate offset
       offset = limit * (page - 1);
     }
     return Article
       .findAll({
         include: [{
           model: User,
+          as: 'author',
           attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        },
+        {
+          model: Like,
+          as: 'likes',
         }],
         offset,
         limit,

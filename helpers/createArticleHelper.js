@@ -33,18 +33,22 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
       imageUrl,
       readTime
     })
-    .then(article => Article.findById(article.id, {
-      include: [{
-        model: User,
-        attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
-      }],
-      attributes: { exclude: ['id'] }
+    .then(article => Article.findOne({
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: { exclude: ['id', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        }],
+      where: {
+        slug: article.slug
+      }
     }))
     .then((article) => {
       authorId = article.userId;
       articleTitle = article.title;
       articleSlug = article.slug;
-      author = article.User.username;
+      author = article.author.username;
       createdArticle = article;
       return Follow.findAll({
         where: { followId: authorId },

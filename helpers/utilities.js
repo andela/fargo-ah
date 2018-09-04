@@ -46,6 +46,8 @@ export default class Utilities {
     } else {
       output = {
         success: true,
+        message: `You've successfully registered! A verification email has been sent to you,
+       please click the verification link to continue`,
         user: {
           email: userObject.email,
           token,

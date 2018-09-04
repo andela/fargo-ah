@@ -104,6 +104,7 @@ exports.searchByTagAuthorOrTitle = (req, res) => {
   searchParameters.offset = offset;
   searchParameters.include = [{
     model: User,
+    as: 'author',
     attributes: ['username', 'firstname', 'lastname'],
   }];
   return searchParameters;
