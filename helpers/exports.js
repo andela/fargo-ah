@@ -47,7 +47,7 @@ export const resendVerificationEmail = async (req, res) => {
   * @param {object} res - Response object
   * @returns {object} returns the list of articles matching the search criteria
   */
-export const searchByTagAuthorOrTitle = (req, res) => {
+ exports.searchByTagAuthorOrTitle = (req, res) => {
   const searchParameters = {};
   // Get every parameter and key passed in the query string
   const queryObjectKeysAndValues = Object.entries(req.query);
@@ -104,13 +104,12 @@ export const searchByTagAuthorOrTitle = (req, res) => {
   searchParameters.offset = offset;
   searchParameters.include = [{
     model: User,
-    as: 'author',
     attributes: ['username', 'firstname', 'lastname'],
   }];
   return searchParameters;
 };
 
-export const listOfCategories = (req, res) => {
+exports.listOfCategories = (req, res) => {
   const categorieslist = ['Politics', 'Science', 'Sports', 'Culture', 'Education',
     'Movies', 'Agriculture', 'Cartoon', 'Technology', 'Business', 'Entertainment'];
   return res.status(200).json({ message: 'List of categories', categorieslist });

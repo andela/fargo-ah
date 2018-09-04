@@ -34,7 +34,7 @@ const validateArticle = (req, res, next) => {
   req.body.article.title = title.trim();
   req.body.article.description = description.trim();
   req.body.article.body = body.trim();
-  req.body.article.imageData = file.path;
+  req.body.article.imageData = file ? file.path : null;
 
   next();
 };

@@ -4,7 +4,7 @@ import Utilities from './utilities';
 
 const editResponse = (res, articleObject, imageUrl = null, next) => {
   const {
-    title, description, body, isPaidFor, price, count, slug
+    title, description, body, isPaidFor, price, count, slug, tagList, categorylist,
   } = articleObject;
 
   Article.update({
@@ -12,6 +12,8 @@ const editResponse = (res, articleObject, imageUrl = null, next) => {
     description,
     body,
     isPaidFor,
+    tagList,
+    categorylist,
     price,
     imageUrl,
     updatedCount: Utilities.increaseCount(count)

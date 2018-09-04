@@ -6,14 +6,14 @@ const getArticle = (req, res, next) => {
     include: [{
       model: User,
       as: 'author',
-      attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+      attributes: { exclude: ['email', 'hashedPassword', 'createdAt', 'updatedAt'] }
     }, {
       model: Like,
       as: 'likes',
       include: [{
         model: User,
         as: 'user',
-        attributes: { exclude: ['id', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        attributes: { exclude: ['hashedPassword', 'createdAt', 'updatedAt'] }
       }],
     }],
     attributes: { exclude: ['userId'] },

@@ -49,29 +49,48 @@ class ArticleController {
    * @returns {object} - the found article from database or error if not found
    */
   static getArticle(req, res, next) {
-    const { articleObject } = req;
-    if (articleObject.isPaidFor === true) {
-      return Payment.find({
-        where: {
-          [Op.and]: [
-            { userId: req.userId },
-            { articleId: articleObject.id }
-          ]
+    const { articleObject, userId } = req;
+    const articleBody = `${articleObject.body.substring(0, 500)}...`;
+    const notPaid = {
+      article: {
+        title: articleObject.title,
+        slug: articleObject.slug,
+        body: articleBody,
+        tagList: articleObject.tagList,
+        categorylist: articleObject.categorylist,
+        imageUrl: articleObject.imageUrl,
+        isPaidFor: articleObject.isPaidFor,
+        price: articleObject.price,
+        readTime: articleObject.readTime,
+        createdAt: articleObject.createdAt,
+        author: articleObject.author,
+        likes: articleObject.likes,
+        errors: {
+          body: ['You need to purchase this article to read it']
         }
-      })
-        .then((payment) => {
-          if (payment) {
-            return res.status(200).json({
-              article: articleObject,
-            });
+      }
+    };
+    if (articleObject.isPaidFor === true) {
+      if (userId) {
+        return Payment.find({
+          where: {
+            [Op.and]: [
+              { userId: req.userId },
+              { articleId: articleObject.id }
+            ]
           }
-          return res.status(400).json({
-            errors: {
-              body: ['You need to purchase this article to read it']
-            }
-          });
         })
-        .catch(next);
+          .then((payment) => {
+            if (payment || articleObject.author.id === userId) {
+              return res.status(200).json({
+                article: articleObject,
+              });
+            }
+            return res.status(200).json(notPaid);
+          })
+          .catch(next);
+      }
+      return res.status(200).json(notPaid);
     }
     return res.status(200).json({
       article: articleObject,
@@ -193,12 +212,12 @@ class ArticleController {
   */
   static editArticle(req, res) {
     const {
-      title, description, body, isPaidFor, price, imageData,
+      title, description, body, isPaidFor, price, imageData, tagList, categorylist,
     } = req.body.article;
     const { count } = req;
     const { slug } = req.params;
     const articleObject = {
-      title, description, body, isPaidFor, price, count, slug,
+      title, description, body, isPaidFor, price, count, slug, tagList, categorylist,
     };
     if (imageData) {
       return cloudinary.v2.uploader.upload(imageData, { tags: 'basic_sample' })

@@ -14,7 +14,6 @@ const validateProfile = (req, res, next) => {
       error.push('Username can not be less than 5 characters');
     }
   }
-  // if (bio) {
   if (bio && bio.length < 100) {
     error.push('Bio can not be less than 100 characters');
   }
@@ -25,10 +24,9 @@ const validateProfile = (req, res, next) => {
   }
   if (lastname) {
     if (!alphabetsOnly.test(lastname)) {
-      error.push('Firstname must only contain characters');
+      error.push('Lastname must only contain characters');
     }
   }
-  // }
   if (image) {
     if (!validUrl.test(image)) {
       error.push('Image must be a valid url');
