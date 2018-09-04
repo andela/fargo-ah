@@ -14,8 +14,8 @@ const searchForArticles = async (req, res, next) => {
   try {
     // query the database
     const searchParameters = searchByTagAuthorOrTitle(req, res);
-    const articles = await Article.findAll(searchParameters);
-    if (articles.length > 0) {
+    const articles = await Article.findAndCountAll(searchParameters);
+    if (articles.count > 0) {
       return res.status(200).send({ articles, message: 'These are the articles found' });
     }
     return res.status(200).json({ message: 'No article found for your search' });

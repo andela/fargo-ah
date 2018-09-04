@@ -65,11 +65,14 @@ export default class CommentsController {
     Comment.findAll({
       include: [{
         model: User,
-        attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] },
       }, {
         model: Reply,
+        include: [{
+          model: User,
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt', 'lastname', 'firstname', 'bio'] },
+        }]
       }],
-    }, {
       where: {
         articleId: req.articleObject.id,
       }
