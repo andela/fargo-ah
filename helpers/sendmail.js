@@ -19,7 +19,7 @@ const sendEmail = (userToBeVerified) => {
     text: 'A writers dream an authors haven',
     html: htmlTempate // html body
   };
-
+  
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   nodemailer.createTestAccount(() => {

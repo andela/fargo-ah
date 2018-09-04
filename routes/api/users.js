@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multiparty from 'connect-multiparty';
 import utils from '../../helpers/utilities';
 import validateSignup from '../../middlewares/validateSignup';
 import validateLogin from '../../middlewares/validateLogin';
@@ -9,8 +10,10 @@ import validator from '../../middlewares/ParamsValidator';
 import inputValidator from '../../middlewares/inputValidator';
 import { resendVerificationEmail } from '../../helpers/exports';
 import { checkIfUserIsVerified } from '../../middlewares/checkIfUserIsVerified';
+import uploadToCloudinary from '../../helpers/uploadToCloudinary';
 import getUser from '../../middlewares/getUser';
 
+const fileParser = multiparty();
 const router = Router();
 
 router.get('/users/verify/:token', UsersController.verifyEmail);
@@ -29,9 +32,11 @@ router.get(
 
 router.put(
   '/profiles/:username',
+  [fileParser],
   validateToken,
   validator.validateId,
   validator.validateUsername,
+  uploadToCloudinary,
   validateProfile,
   UsersController.editProfile
 );
