@@ -70,7 +70,7 @@ export default class CommentsController {
         model: Reply,
         include: [{
           model: User,
-          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt', 'lastname', 'firstname', 'bio'] },
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt', 'lastname', 'bio'] },
         }]
       }],
       where: {
