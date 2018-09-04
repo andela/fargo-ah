@@ -43,7 +43,7 @@ router.put(
 
 router.post('/users', validateSignup, UsersController.registerUser);
 
-//router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
+// router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
 router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendmail);
 
 router.put('/users/password/reset/edit', inputValidator.validatePassword, validateToken, utils.resetPassword);
