@@ -18,7 +18,7 @@ const searchForArticles = async (req, res, next) => {
     if (articles.count > 0) {
       return res.status(200).send({ articles, message: 'These are the articles found' });
     }
-    return res.status(200).json({ message: 'No article found for your search' });
+    return res.status(200).json({ articles, message: 'No article found for your search' });
   } catch (err) {
     next(err);
   }

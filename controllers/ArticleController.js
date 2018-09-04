@@ -1,8 +1,10 @@
 import { Op } from 'sequelize';
 import cloudinary from '../config/cloudinary';
-import Utilities from '../helpers/utilities';
-import { Article, User, Like, Payment } from '../models';
+import {
+  Article, User, Like, Payment
+} from '../models';
 import createArticleHelper from '../helpers/createArticleHelper';
+import editResponse from '../helpers/editArticleHelper';
 
 /**
  * Article class for users
@@ -77,6 +79,57 @@ class ArticleController {
   }
 
   /**
+   * get an article using slug as query parameter
+   * @param {object} req - request object
+   * @param {object} res - response object
+   * @param {function} next - to handle errors
+   * @returns {object} - the found article from database or error if not found
+   */
+  static getAllUserArticles(req, res, next) {
+    const { username } = req.params;
+    const { page, limit } = req;
+    let offset = null;
+
+    if (page || limit) {
+      // calculate offset
+      offset = limit * (page - 1);
+    }
+    return User.findOne({ where: { username, } })
+      .then(user => Article.findAll({
+        where: {
+          userId: user.id,
+        },
+        include: [{
+          model: User,
+          as: 'author',
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        },
+        {
+          model: Like,
+          as: 'likes',
+        }],
+        offset,
+        limit,
+      }))
+      .then((articles) => {
+        if (articles.length === 0) {
+          const message = page ? 'articles limit exceeded'
+            : 'Sorry, no articles created';
+          return res.status(200).json({
+            message,
+            articles,
+            articlesCount: articles.length
+          });
+        }
+        return res.status(200).json({
+          articles,
+          articlesCount: articles.length
+        });
+      })
+      .catch(next);
+  }
+
+  /**
    * get all articles created and use the query
    * if provided to implement pagination
    * @param {object} req - request object
@@ -138,31 +191,20 @@ class ArticleController {
   * successful requests, or error object for
   * requests that fail
   */
-  static editArticle(req, res, next) {
+  static editArticle(req, res) {
     const {
-      title, description, body, isPaidFor, price
+      title, description, body, isPaidFor, price, imageData,
     } = req.body.article;
     const { count } = req;
     const { slug } = req.params;
-    return Article.update({
-      title,
-      description,
-      body,
-      isPaidFor,
-      price,
-      updatedCount: Utilities.increaseCount(count)
-    }, {
-      where: {
-        slug,
-      },
-      returning: true,
-      plain: true
-    })
-      .then(result => res.status(200).json({
-        success: true,
-        article: result[1]
-      }))
-      .catch(next);
+    const articleObject = {
+      title, description, body, isPaidFor, price, count, slug,
+    };
+    if (imageData) {
+      return cloudinary.v2.uploader.upload(imageData, { tags: 'basic_sample' })
+        .then(image => editResponse(res, articleObject, image.url));
+    }
+    editResponse(res, articleObject);
   }
 
   /**

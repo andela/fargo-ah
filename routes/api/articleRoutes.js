@@ -27,6 +27,7 @@ router.post(
 );
 router.put(
   '/articles/:slug',
+  [fileParser],
   validateArticle,
   validatePrice,
   verifyToken,
@@ -52,6 +53,11 @@ router.get(
   ArticleControllers.listAllArticles,
   searchForArticles
 );
+router.get(
+  '/user/articles/:username',
+  ParamsValidator.validatePageQuery,
+  ArticleControllers.getAllUserArticles,
+);
 router.post(
   '/articles/:slug/like',
   verifyToken,
@@ -65,15 +71,6 @@ router.put(
   checkArticle,
   ArticleControllers.likeArticle
 );
-// router.post('/articles', verifyToken, validateArticle, validatePrice, ArticleControllers.createArticle);
-
-// router.put('/articles/:slug', validateArticle, validatePrice, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);
-
-// router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.deleteArticle);
-
-// router.get('/articles/:slug', ArticleControllers.getArticle);
-
-// router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
 router.post('/articles', verifyToken, validateArticle, validatePrice, ArticleControllers.createArticle);
 
 router.put('/articles/:slug', validateArticle, validatePrice, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);
