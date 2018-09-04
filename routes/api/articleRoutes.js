@@ -74,6 +74,15 @@ router.put(
 // router.get('/articles/:slug', ArticleControllers.getArticle);
 
 // router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
+router.post('/articles', verifyToken, validateArticle, validatePrice, ArticleControllers.createArticle);
+
+router.put('/articles/:slug', validateArticle, validatePrice, verifyToken, articleExists, checkCount, ArticleControllers.editArticle);
+
+router.delete('/articles/:slug', verifyToken, articleExists, ArticleControllers.deleteArticle);
+
+router.get('/articles/:slug', ArticleControllers.getArticle);
+
+router.get('/articles', ParamsValidator.validatePageQuery, ArticleControllers.listAllArticles);
 
 router.get('/tags', ArticleControllers.getAllTags);
 router.get('/articles/list/categories', listOfCategories);

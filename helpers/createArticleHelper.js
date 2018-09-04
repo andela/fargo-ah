@@ -1,8 +1,9 @@
 import generateUniqueSlug from './generateUniqueSlug';
 import { Article, User, Follow } from '../models';
-import sendEmail from './sendEmail';
+import { sendMailArticle } from './sendEmail';
 import { sendNotification, userData } from '../notification/index';
 import calculateReadTime from './calculateReadTime';
+
 
 /**
  * @description an helper function to help create article in database
@@ -65,7 +66,7 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
       const emails = users.map(user => user['myFollowers.email']);
       const followersId = users.map(user => user['myFollowers.id']);
       if (emails.length > 0 || followersId.length > 0) {
-        sendEmail(emails, author, articleSlug);
+        sendMailArticle(emails, author, articleSlug);
         followersId.forEach((id) => {
           sendNotification(userData(articleTitle, author), id);
         });

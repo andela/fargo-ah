@@ -193,7 +193,7 @@ exports.emailTemplate = link => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Tr
                             <w:anchorlock/>
                             <center style="color:#ffffff;font-family:sans-serif;font-size:15px;">Verify Email</center>
                           </v:roundrect><![endif]-->
-                            <a href="${link}" class="button button--blue">Verify Email</a>
+                            <a href="${link}" class="button button--blue" style="color: white">Verify Email</a>
                           </div>
                         </td>
                       </tr>

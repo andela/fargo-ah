@@ -5,7 +5,7 @@ import sendVerificationEmail from './sendmail';
 
 const { Op } = Sequelize;
 
-exports.resendVerificationEmail = async (req, res) => {
+export const resendVerificationEmail = async (req, res) => {
   const { email } = req.body.user;
   try {
     const usertoBeVerified = await User.findOne({
@@ -47,7 +47,7 @@ exports.resendVerificationEmail = async (req, res) => {
   * @param {object} res - Response object
   * @returns {object} returns the list of articles matching the search criteria
   */
-exports.searchByTagAuthorOrTitle = (req, res) => {
+export const searchByTagAuthorOrTitle = (req, res) => {
   const searchParameters = {};
   // Get every parameter and key passed in the query string
   const queryObjectKeysAndValues = Object.entries(req.query);
@@ -110,7 +110,7 @@ exports.searchByTagAuthorOrTitle = (req, res) => {
   return searchParameters;
 };
 
-exports.listOfCategories = (req, res) => {
+export const listOfCategories = (req, res) => {
   const categorieslist = ['Politics', 'Science', 'Sports', 'Culture', 'Education',
     'Movies', 'Agriculture', 'Cartoon', 'Technology', 'Business', 'Entertainment'];
   return res.status(200).json({ message: 'List of categories', categorieslist });
