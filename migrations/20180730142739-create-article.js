@@ -23,7 +23,7 @@ module.exports = {
       defaultValue: '0'
     },
     tagList: {
-      type: Sequelize.ARRAY(Sequelize.STRING)
+      type: Sequelize.ARRAY(Sequelize.TEXT)
     },
     favorited: {
       type: Sequelize.BOOLEAN
@@ -35,10 +35,6 @@ module.exports = {
       type: Sequelize.STRING
     },
     createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
       allowNull: false,
       type: Sequelize.DATE
     },
@@ -56,6 +52,10 @@ module.exports = {
     },
     price: {
       type: Sequelize.DECIMAL
+    },
+    updatedAt: {
+      allowNull: false,
+      type: Sequelize.DATE
     }
   }),
   down: (queryInterface/* , Sequelize */) => {

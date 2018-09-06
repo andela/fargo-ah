@@ -1,7 +1,7 @@
 const validUser = {
   user: {
     email: 'olumide@yahoo.com',
-    username: 'Lumexata',
+    username: 'Lumexat',
     password: 'spirit2018',
   }
 };
@@ -20,7 +20,9 @@ const editedArticle = {
     title: 'How to train your dragon right',
     description: 'Ever wonder how?',
     body: 'You have to believe it to achieve it',
-    tagList: ['reactjs', 'angularjs', 'dragons']
+    tagList: ['reactjs', 'angularjs', 'dragons'],
+    isPaidFor: true,
+    price: 2.30
   }
 };
 
@@ -75,6 +77,22 @@ const commentNotString = {
     body: 1,
   }
 };
+const paymentData = {
+  userId: 5,
+  articleId: 3,
+  amount: 400,
+  stripeToken: 'tok_1CzPWMGt81p147i69JaE0DGg',
+  stripeTokenType: 'card',
+  stripeEmail: 'rafo@gmail.com',
+};
+
+const userForPayment = {
+  user: {
+    email: 'newuser@register.com',
+    username: 'regnewuser',
+    password: 'password123',
+  }
+};
 
 export default {
   validUser,
@@ -88,4 +106,6 @@ export default {
   invalidComment,
   commentWithoutBody,
   commentNotString,
+  paymentData,
+  userForPayment,
 };

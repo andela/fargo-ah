@@ -33,19 +33,6 @@ module.exports = (sequelize, DataTypes) => {
 
   Article.associate = (models) => {
     // associations can be defined here
-
-    Article.belongsTo(models.User, {
-      foreignKey: 'userId',
-      onDelete: 'CASCADE',
-    });
-
-    Article.belongsTo(
-      models.User,
-      {
-        foreignKey: 'userId',
-        onDelete: 'CASCADE',
-      }
-    );
     Article.hasMany(models.Like, {
       foreignKey: 'articleId',
       as: 'likes',
@@ -57,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
     Article.hasMany(models.Comment, {
       foreignKey: 'articleId',
       as: 'comments',
+    });
+    Article.hasMany(models.Payment, {
+      foreignKey: 'articleId',
+      as: 'payments',
     });
   };
   return Article;

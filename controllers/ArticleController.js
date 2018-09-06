@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import cloudinary from '../config/cloudinary';
 import Utilities from '../helpers/utilities';
-import { Article, User, Like } from '../models';
+import { Article, User, Like, Payment } from '../models';
 import createArticleHelper from '../helpers/createArticleHelper';
 
 /**
@@ -36,7 +36,6 @@ class ArticleController {
         .then(image => createArticleHelper(res, articleObject, image.url))
         .catch(() => createArticleHelper(res, articleObject));
     }
-
     return createArticleHelper(res, articleObject);
   }
 
@@ -48,32 +47,33 @@ class ArticleController {
    * @returns {object} - the found article from database or error if not found
    */
   static getArticle(req, res, next) {
-    const { slug } = req.params;
-
-    return Article
-      .findOne({
-        where: { slug, },
-        include: [{
-          model: User,
-          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
-        }],
-        attributes: { exclude: ['userId'] }
+    const { articleObject } = req;
+    if (articleObject.isPaidFor === true) {
+      return Payment.find({
+        where: {
+          [Op.and]: [
+            { userId: req.userId },
+            { articleId: articleObject.id }
+          ]
+        }
       })
-      .then((article) => {
-        // if the article does not exist
-        if (!article) {
-          return res.status(404).json({
+        .then((payment) => {
+          if (payment) {
+            return res.status(200).json({
+              article: articleObject,
+            });
+          }
+          return res.status(400).json({
             errors: {
-              body: [
-                'Ooops! the article cannot be found.'
-              ]
+              body: ['You need to purchase this article to read it']
             }
           });
-        }
-
-        return res.status(200).json({ article });
-      })
-      .catch(next);
+        })
+        .catch(next);
+    }
+    return res.status(200).json({
+      article: articleObject,
+    });
   }
 
   /**
@@ -92,7 +92,6 @@ class ArticleController {
     // calculate offset
       offset = limit * (page - 1);
     }
-
     return Article
       .findAll({
         include: [{
