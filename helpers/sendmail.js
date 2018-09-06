@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import winston from 'winston';
 import mailtemplate from './mailtemplate';
 
-exports.sendEmail = async (userToBeVerified) => {
+exports.sendEmail = (userToBeVerified) => {
   const token = jwt.sign(
     { id: userToBeVerified.id },
     process.env.SECRET_KEY, { expiresIn: 60 * process.env.VERIFYTOKEN_EXPIRY }

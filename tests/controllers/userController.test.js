@@ -1,5 +1,6 @@
 import chai, { expect, assert } from 'chai';
 import chaiHttp from 'chai-http';
+import jwt from 'jsonwebtoken';
 import app from '../../index';
 
 chai.use(chaiHttp);
@@ -757,6 +758,29 @@ describe('Tests for user controller', () => {
           done();
         });
     });
+
+    it('Should be able to verify a new user', (done) => {
+      const token = jwt.sign({ id: 9 },
+        process.env.SECRET_KEY, { expiresIn: 60 * process.env.VERIFYTOKEN_EXPIRY });
+      chai
+        .request(app)
+        .get(`/api/users/verify/${token}`)
+        .send({
+          user: {
+            username: 'kaizer',
+            email: 'chief@kf.com',
+            password: 'password123'
+          }
+        })
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.message).to.equal('The user has been verified');
+          done();
+        });
+    });
+
     it('It should not reset password if token cannot be found', (done) => {
       chai
         .request(app)

@@ -5,7 +5,6 @@ import mailer from 'nodemailer';
 import stubTransport from 'nodemailer-stub-transport';
 import { User } from '../models';
 
-
 /**
  *  Class representing all utility functions
  *

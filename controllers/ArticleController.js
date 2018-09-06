@@ -87,6 +87,7 @@ class ArticleController {
   static listAllArticles(req, res, next) {
     const { page, limit } = req;
     let offset = null;
+    if (req.query.author || req.query.tag || req.query.title) return next();
 
     if (page || limit) {
     // calculate offset
@@ -170,9 +171,7 @@ class ArticleController {
   */
   static deleteArticle(req, res, next) {
     const { slug } = req.params;
-    Article.destroy({
-      where: { slug }
-    })
+    Article.destroy({ where: { slug } })
       .then(() => res.status(200).json({ message: 'Article successfully deleted' }))
       .catch(next);
   }
