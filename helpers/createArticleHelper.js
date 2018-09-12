@@ -16,7 +16,7 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
   let authorId, author, articleTitle, articleSlug, createdArticle;
   articleObject.price = (articleObject.price) ? articleObject.price.toFixed(2) : 0;
   const {
-    title, description, body, tagList, userId, isPaidFor, price, wordCount
+    title, description, body, tagList, categorylist, userId, isPaidFor, price, wordCount
   } = articleObject;
   const readTime = calculateReadTime(wordCount);
   return Article
@@ -29,6 +29,7 @@ const createArticleHelper = (res, articleObject, imageUrl = null, next) => {
       isPaidFor,
       price,
       tagList,
+      categorylist,
       imageUrl,
       readTime
     })

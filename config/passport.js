@@ -43,7 +43,7 @@ const passportConfig = (app) => {
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: '/api/users/login/facebook/redirect',
+    callbackURL: process.envFACEBOOK_REDIRECT_URL,
     profileFields: ['id', 'displayName', 'photos', 'email'],
   }, AuthController.strategyCallback));
 };

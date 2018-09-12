@@ -50,7 +50,7 @@ exports.resendVerificationEmail = async (req, res) => {
 exports.searchByTagAuthorOrTitle = (req, res) => {
   const searchParameters = {};
   // Get every parameter and key passed in the query string
-  const keysAndValues = Object.entries(req.query);
+  const queryObjectKeysAndValues = Object.entries(req.query);
   let { pageNumber = 1, pageSize = 10 } = req.query;
   pageNumber = parseInt(pageNumber, 10);
   pageSize = parseInt(pageSize, 10);
@@ -67,13 +67,19 @@ exports.searchByTagAuthorOrTitle = (req, res) => {
   const offset = (pageNumber - 1) * limit;
   const queryStringValues = Object.values(req.query);
   let textToSearch = queryStringValues[0];
+  textToSearch = textToSearch.toLowerCase();
   textToSearch = trim(escape(textToSearch));
 
   // selects the search value from the key
-  const searchCriteria = keysAndValues[0][0];
+  const searchCriteria = queryObjectKeysAndValues[0][0];
   if (searchCriteria === 'tag') {
     searchParameters.where = {
       [Op.or]: [{ tagList: { [Op.contains]: [textToSearch] } }]
+    };
+  }
+  if (searchCriteria === 'category') {
+    searchParameters.where = {
+      [Op.or]: [{ categorylist: { [Op.contains]: [textToSearch] } }]
     };
   }
   if (searchCriteria === 'title') {
@@ -98,7 +104,13 @@ exports.searchByTagAuthorOrTitle = (req, res) => {
   searchParameters.offset = offset;
   searchParameters.include = [{
     model: User,
-    attributes: ['username'],
+    attributes: ['username', 'firstname', 'lastname'],
   }];
   return searchParameters;
+};
+
+exports.listOfCategories = (req, res) => {
+  const categorieslist = ['Politics', 'Science', 'Sports', 'Culture', 'Education',
+    'Movies', 'Agriculture', 'Cartoon', 'Technology', 'Business', 'Entertainment'];
+  return res.status(200).json({ message: 'List of categories', categorieslist });
 };

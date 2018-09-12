@@ -39,6 +39,8 @@ export default class Utilities {
           username: userObject.username,
           bio: userObject.bio,
           image: userObject.image,
+          firstname: userObject.firstname,
+          lastname: userObject.lastname
         },
       };
     } else {
@@ -50,6 +52,8 @@ export default class Utilities {
           username: userObject.username,
           bio: userObject.bio,
           image: userObject.image,
+          firstname: userObject.firstname,
+          lastname: userObject.lastname
         },
       };
     }
