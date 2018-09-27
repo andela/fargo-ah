@@ -21,11 +21,11 @@ export default class PaymentController {
   * @returns {link} redirects to create payment
   */
   static makePayment(req, res, next) {
-    this.getStripe().customers.create({
+    PaymentController.getStripe().customers.create({
       email: req.body.email,
       source: req.body.stripeToken
     })
-      .then(customer => this.getStripe().charges.create({
+      .then(customer => PaymentController.getStripe().charges.create({
         amount: req.body.amount * 100,
         description: `Payment for ${req.params.slug}`,
         currency: 'usd',

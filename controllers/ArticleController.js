@@ -167,10 +167,11 @@ class ArticleController {
     }
     return Article
       .findAll({
+        order: [['id', 'DESC']],
         include: [{
           model: User,
           as: 'author',
-          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] },
         },
         {
           model: Like,
@@ -212,7 +213,7 @@ class ArticleController {
   */
   static editArticle(req, res) {
     const {
-      title, description, body, isPaidFor, price, imageData, tagList, categorylist,
+      title, description, body, isPaidFor, price, imageData, imageUrl, tagList, categorylist,
     } = req.body.article;
     const { count } = req;
     const { slug } = req.params;
@@ -223,7 +224,7 @@ class ArticleController {
       return cloudinary.v2.uploader.upload(imageData, { tags: 'basic_sample' })
         .then(image => editResponse(res, articleObject, image.url));
     }
-    editResponse(res, articleObject);
+    editResponse(res, articleObject, imageUrl);
   }
 
   /**

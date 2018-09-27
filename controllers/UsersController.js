@@ -193,7 +193,7 @@ export default class UsersController {
       return res.status(200).json({ message: 'The user has been verified' });
     } catch (err) {
       return res.status(400).json({
-        errors: { body: ['Your verification link has expired or invalid'] }
+        errors: { body: ['Your verification link has expired or is invalid'] }
       });
     }
   }
