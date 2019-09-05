@@ -5,14 +5,15 @@ const getArticle = (req, res, next) => {
   Article.findOne({
     include: [{
       model: User,
-      attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+      as: 'author',
+      attributes: { exclude: ['email', 'hashedPassword', 'createdAt', 'updatedAt'] }
     }, {
       model: Like,
       as: 'likes',
       include: [{
         model: User,
         as: 'user',
-        attributes: { exclude: ['id', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        attributes: { exclude: ['hashedPassword', 'createdAt', 'updatedAt'] }
       }],
     }],
     attributes: { exclude: ['userId'] },
@@ -23,7 +24,6 @@ const getArticle = (req, res, next) => {
     .then((article) => {
       if (!article) {
         return res.status(404).json({
-          success: false,
           errors: {
             body: ['Ooops! the article cannot be found.']
           },

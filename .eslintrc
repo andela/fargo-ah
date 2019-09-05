@@ -17,6 +17,7 @@
     "import/no-unresolved": [2, { "commonjs": true }],
     "import/extensions": ["error", "as-needed"],
     "no-shadow": ["error", { "allow": ["req", "res", "err"] }],
+    "import/named": 0,
     "valid-jsdoc": ["error", {
       "requireReturn": true,
       "requireReturnType": true,

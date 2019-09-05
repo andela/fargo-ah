@@ -37,14 +37,14 @@ const passportConfig = (app) => {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/users/login/google/redirect',
+    callbackURL: `${process.env.BACKEND_HOST_URL}/api/users/login/google/redirect`,
   }, AuthController.strategyCallback));
 
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.envFACEBOOK_REDIRECT_URL,
-    profileFields: ['id', 'displayName', 'photos', 'email'],
+    callbackURL: `${process.env.BACKEND_HOST_URL}/api/users/login/facebook/redirect`,
+    profileFields: ['id', 'name', 'photos', 'email'],
   }, AuthController.strategyCallback));
 };
 

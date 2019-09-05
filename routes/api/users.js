@@ -1,6 +1,8 @@
 import { Router } from 'express';
+import multiparty from 'connect-multiparty';
 import utils from '../../helpers/utilities';
 import validateSignup from '../../middlewares/validateSignup';
+import validateLogin from '../../middlewares/validateLogin';
 import UsersController from '../../controllers/UsersController';
 import validateProfile from '../../middlewares/validateProfile';
 import validateToken from '../../middlewares/verifyToken';
@@ -8,29 +10,42 @@ import validator from '../../middlewares/ParamsValidator';
 import inputValidator from '../../middlewares/inputValidator';
 import { resendVerificationEmail } from '../../helpers/exports';
 import { checkIfUserIsVerified } from '../../middlewares/checkIfUserIsVerified';
+import uploadToCloudinary from '../../helpers/uploadToCloudinary';
 import getUser from '../../middlewares/getUser';
 
+const fileParser = multiparty();
 const router = Router();
 
 router.get('/users/verify/:token', UsersController.verifyEmail);
-router.post('/users/reverify', inputValidator.validateEmail, resendVerificationEmail);
+
 router.post('/users', validateSignup, UsersController.registerUser);
-router.post('/users/login', checkIfUserIsVerified, UsersController.login);
+
+router.post('/users/reverify', inputValidator.validateEmail, resendVerificationEmail);
+
+router.post('/users/login', validateLogin, checkIfUserIsVerified, UsersController.login);
+
 router.get(
   '/profiles/:username',
   validator.validateUsername,
   UsersController.getProfile
 );
+
 router.put(
   '/profiles/:username',
+  [fileParser],
   validateToken,
   validator.validateId,
   validator.validateUsername,
+  uploadToCloudinary,
   validateProfile,
   UsersController.editProfile
 );
+
 router.post('/users', validateSignup, UsersController.registerUser);
-router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
+
+// router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendEmail);
+router.post('/users/password/reset', inputValidator.validateEmail, utils.checkEmail, utils.sendmail);
+
 router.put('/users/password/reset/edit', inputValidator.validatePassword, validateToken, utils.resetPassword);
 
 router.post(

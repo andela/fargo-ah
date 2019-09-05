@@ -4,7 +4,7 @@ import PaymentController from '../../controllers/PaymentController';
 import getArticle from '../../middlewares/getArticle';
 import verifyToken from '../../middlewares/verifyToken';
 import getUser from '../../middlewares/getUser';
-import beforePayment from '../../middlewares/beforePayment';
+// import beforePayment from '../../middlewares/beforePayment';
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.post(
   verifyToken,
   getUser,
   getArticle,
-  beforePayment,
+  // beforePayment,
   PaymentController.makePayment
 );
 

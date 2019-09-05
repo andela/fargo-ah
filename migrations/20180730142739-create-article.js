@@ -16,7 +16,7 @@ module.exports = {
       type: Sequelize.STRING
     },
     body: {
-      type: Sequelize.STRING
+      type: Sequelize.TEXT
     },
     updatedCount: {
       type: Sequelize.INTEGER,
@@ -24,12 +24,6 @@ module.exports = {
     },
     tagList: {
       type: Sequelize.ARRAY(Sequelize.STRING)
-    },
-    favorited: {
-      type: Sequelize.BOOLEAN
-    },
-    favoritesCount: {
-      type: Sequelize.INTEGER
     },
     imageUrl: {
       type: Sequelize.STRING

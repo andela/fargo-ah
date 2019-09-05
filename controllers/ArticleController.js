@@ -1,8 +1,10 @@
 import { Op } from 'sequelize';
 import cloudinary from '../config/cloudinary';
-import Utilities from '../helpers/utilities';
-import { Article, User, Like, Payment } from '../models';
+import {
+  Article, User, Like, Payment
+} from '../models';
 import createArticleHelper from '../helpers/createArticleHelper';
+import editResponse from '../helpers/editArticleHelper';
 
 /**
  * Article class for users
@@ -47,33 +49,103 @@ class ArticleController {
    * @returns {object} - the found article from database or error if not found
    */
   static getArticle(req, res, next) {
-    const { articleObject } = req;
-    if (articleObject.isPaidFor === true) {
-      return Payment.find({
-        where: {
-          [Op.and]: [
-            { userId: req.userId },
-            { articleId: articleObject.id }
-          ]
+    const { articleObject, userId } = req;
+    const articleBody = `${articleObject.body.substring(0, 500)}...`;
+    const notPaid = {
+      article: {
+        title: articleObject.title,
+        slug: articleObject.slug,
+        body: articleBody,
+        tagList: articleObject.tagList,
+        categorylist: articleObject.categorylist,
+        imageUrl: articleObject.imageUrl,
+        isPaidFor: articleObject.isPaidFor,
+        price: articleObject.price,
+        readTime: articleObject.readTime,
+        createdAt: articleObject.createdAt,
+        author: articleObject.author,
+        likes: articleObject.likes,
+        errors: {
+          body: ['You need to purchase this article to read it']
         }
-      })
-        .then((payment) => {
-          if (payment) {
-            return res.status(200).json({
-              article: articleObject,
-            });
+      }
+    };
+    if (articleObject.isPaidFor === true) {
+      if (userId) {
+        return Payment.find({
+          where: {
+            [Op.and]: [
+              { userId: req.userId },
+              { articleId: articleObject.id }
+            ]
           }
-          return res.status(400).json({
-            errors: {
-              body: ['You need to purchase this article to read it']
-            }
-          });
         })
-        .catch(next);
+          .then((payment) => {
+            if (payment || articleObject.author.id === userId) {
+              return res.status(200).json({
+                article: articleObject,
+              });
+            }
+            return res.status(200).json(notPaid);
+          })
+          .catch(next);
+      }
+      return res.status(200).json(notPaid);
     }
     return res.status(200).json({
       article: articleObject,
     });
+  }
+
+  /**
+   * get an article using slug as query parameter
+   * @param {object} req - request object
+   * @param {object} res - response object
+   * @param {function} next - to handle errors
+   * @returns {object} - the found article from database or error if not found
+   */
+  static getAllUserArticles(req, res, next) {
+    const { username } = req.params;
+    const { page, limit } = req;
+    let offset = null;
+
+    if (page || limit) {
+      // calculate offset
+      offset = limit * (page - 1);
+    }
+    return User.findOne({ where: { username, } })
+      .then(user => Article.findAll({
+        where: {
+          userId: user.id,
+        },
+        include: [{
+          model: User,
+          as: 'author',
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        },
+        {
+          model: Like,
+          as: 'likes',
+        }],
+        offset,
+        limit,
+      }))
+      .then((articles) => {
+        if (articles.length === 0) {
+          const message = page ? 'articles limit exceeded'
+            : 'Sorry, no articles created';
+          return res.status(200).json({
+            message,
+            articles,
+            articlesCount: articles.length
+          });
+        }
+        return res.status(200).json({
+          articles,
+          articlesCount: articles.length
+        });
+      })
+      .catch(next);
   }
 
   /**
@@ -90,14 +162,20 @@ class ArticleController {
     if (req.query.author || req.query.tag || req.query.title || req.query.category) return next();
 
     if (page || limit) {
-    // calculate offset
+      // calculate offset
       offset = limit * (page - 1);
     }
     return Article
       .findAll({
+        order: [['id', 'DESC']],
         include: [{
           model: User,
-          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+          as: 'author',
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] },
+        },
+        {
+          model: Like,
+          as: 'likes',
         }],
         offset,
         limit,
@@ -133,31 +211,20 @@ class ArticleController {
   * successful requests, or error object for
   * requests that fail
   */
-  static editArticle(req, res, next) {
+  static editArticle(req, res) {
     const {
-      title, description, body, isPaidFor, price
+      title, description, body, isPaidFor, price, imageData, imageUrl, tagList, categorylist,
     } = req.body.article;
     const { count } = req;
     const { slug } = req.params;
-    return Article.update({
-      title,
-      description,
-      body,
-      isPaidFor,
-      price,
-      updatedCount: Utilities.increaseCount(count)
-    }, {
-      where: {
-        slug,
-      },
-      returning: true,
-      plain: true
-    })
-      .then(result => res.status(200).json({
-        success: true,
-        article: result[1]
-      }))
-      .catch(next);
+    const articleObject = {
+      title, description, body, isPaidFor, price, count, slug, tagList, categorylist,
+    };
+    if (imageData) {
+      return cloudinary.v2.uploader.upload(imageData, { tags: 'basic_sample' })
+        .then(image => editResponse(res, articleObject, image.url));
+    }
+    editResponse(res, articleObject, imageUrl);
   }
 
   /**

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 import { User, Follow } from '../models';
 import utils from '../helpers/utilities';
-import sendVerificationEmail from '../helpers/sendmail';
+import { sendMailVerify } from '../helpers/sendEmail';
 
 /**
  * Class representing users
@@ -18,23 +18,24 @@ export default class UsersController {
    */
   static registerUser(req, res, next) {
     const { email, username, password } = req.body.user;
+    const userEmail = email.toLowerCase();
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
         return next(err);
       }
       User.find({
         where: {
-          [Op.or]: [{ email }, { username }],
+          [Op.or]: [{ email: userEmail }, { username }],
         },
       }).then((user) => {
         if (!user) {
           User.create({
-            email,
+            email: userEmail,
             username,
             hashedPassword: hash,
           }).then((registeredUser) => {
             const token = utils.signToken({ id: registeredUser.id });
-            sendVerificationEmail.sendEmail(registeredUser);
+            sendMailVerify(registeredUser);
             res.status(200).json(utils.userToJson(registeredUser, token));
           }).catch(next);
         } else {
@@ -59,8 +60,9 @@ export default class UsersController {
    */
   static login(req, res, next) {
     const { email, password } = req.body.user;
+    const userEmail = email.toLowerCase();
     User.find({
-      where: { email }
+      where: { email: userEmail }
     })
       .then((foundUser) => {
         if (foundUser) {
@@ -191,7 +193,7 @@ export default class UsersController {
       return res.status(200).json({ message: 'The user has been verified' });
     } catch (err) {
       return res.status(400).json({
-        errors: { body: ['Your verification link has expired or invalid'] }
+        errors: { body: ['Your verification link has expired or is invalid'] }
       });
     }
   }

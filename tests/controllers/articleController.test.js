@@ -93,9 +93,9 @@ describe('Articles API endpoints', () => {
         expect(createdArticle.body).to.equal(validArticleData.article.body);
         expect(createdArticle.description).to.equal(validArticleData.article.description);
         expect(createdArticle.tagList).to.be.an('array').with.lengthOf(validArticleData.article.tagList.length);
-        expect(createdArticle.User).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
-        expect(createdArticle.User).to.have.property('bio');
-        expect(createdArticle.User).to.have.property('image');
+        expect(createdArticle.author).to.be.an('object').to.have.property('username').to.equal(validUser.user.username);
+        expect(createdArticle.author).to.have.property('bio');
+        expect(createdArticle.author).to.have.property('image');
         done();
       });
   });
@@ -284,8 +284,8 @@ describe('Articles API endpoints', () => {
         expect(returnedArticle).to.have.property('title').not.to.equal(createdArticle.slug);
         expect(returnedArticle).to.have.property('description').to.equal(createdArticle.description);
         expect(returnedArticle).to.have.property('body').to.equal(createdArticle.body);
-        expect(returnedArticle).to.have.property('User').to.be.an('object');
-        expect(returnedArticle.User).to.have.property('username').to.equal(validUser.user.username);
+        expect(returnedArticle).to.have.property('author').to.be.an('object');
+        expect(returnedArticle.author).to.have.property('username').to.equal(validUser.user.username);
       });
   });
 

@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
+  "engines": {
+    "node": "10"
+  },
   "scripts": {
     "test:db:seed": "./node_modules/.bin/babel-node ./node_modules/.bin/sequelize db:seed:all",
     "pretest": "NODE_ENV=test npm run migrate:undo && NODE_ENV=test npm run migrate && NODE_ENV=test npm run test:db:seed",
     "test": "NODE_ENV=test nyc mocha tests/**/*.test.js  --compilers js:babel-register --timeout 30000 --require babel-polyfill --exit",
-    "prestart": "babel ./ -d dist --presets=env --ignore node_modules",
+    "prestart": "./node_modules/.bin/babel ./ -d dist --presets=env --ignore node_modules",
     "start": "node ./dist/index.js",
     "dev": "DEBUG=index nodemon --exec babel-node --presets babel-preset-env ./index.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -29,6 +32,7 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "cloudinary": "^1.11.0",
+    "connect-multiparty": "^2.2.0",
     "cors": "^2.8.4",
     "coveralls": "^3.0.2",
     "cuid": "^2.1.1",

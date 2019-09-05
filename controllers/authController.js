@@ -29,11 +29,10 @@ export default class AuthController {
       username: req.user.username,
       image: req.user.image,
     };
-    if (req.user.created) {
-      return res.status(201).json({ success: true, user });
-    }
-    return res.status(200).json({ success: true, user });
+
+    return res.redirect(`${process.env.FRONTEND_HOST_URL}?username=${user.username}&&token=${user.token}`);
   }
+
 
   /**
    * @description - model query function

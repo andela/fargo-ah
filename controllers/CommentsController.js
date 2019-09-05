@@ -63,13 +63,17 @@ export default class CommentsController {
    */
   static getComments(req, res, next) {
     Comment.findAll({
+      order: [['id', 'ASC']],
       include: [{
         model: User,
-        attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] },
       }, {
         model: Reply,
+        include: [{
+          model: User,
+          attributes: { exclude: ['id', 'email', 'hashedPassword', 'createdAt', 'updatedAt', 'lastname', 'bio'] },
+        }]
       }],
-    }, {
       where: {
         articleId: req.articleObject.id,
       }

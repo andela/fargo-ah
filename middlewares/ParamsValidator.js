@@ -8,9 +8,7 @@ export default class ParamsValidator {
    * @returns {boolean} if the username is alphanumeric or not
    */
   static validateUsername(req, res, next) {
-    const alphaNumeric = /^[a-zA-Z0-9]+$/;
-    const test = alphaNumeric.test(req.params.username);
-    if (!test) {
+    if (req.params.username && req.params.username.trim().length <= 2) {
       return res.status(400).json({
         success: false,
         errors: {
@@ -19,6 +17,16 @@ export default class ParamsValidator {
       });
     }
     next();
+    // const alphaNumeric = /^[a-zA-Z0-9]+$/;
+    // const test = alphaNumeric.test(req.params.username);
+    // if (!test) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     errors: {
+    //       body: ['Invalid username'],
+    //     }
+    //   });
+    // }
   }
 
   /**
@@ -73,6 +81,7 @@ export default class ParamsValidator {
    */
   static validatePageQuery(req, res, next) {
     let { page, limit } = req.query;
+    console.log('queryguy', req.query);
 
     if (page || limit) {
       page = Number(page);

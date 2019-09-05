@@ -2,7 +2,6 @@ import expressValidator from 'express-validator';
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
-import session from 'express-session';
 import passport from 'passport';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
@@ -17,6 +16,7 @@ import routes from './routes';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const debug = debugLog('index');
+
 passport.serializeUser(((user, done) => {
   done(null, user);
 }));
@@ -40,14 +40,6 @@ app.use(methodOverride());
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    cookie: { maxAge: 60000 },
-    resave: false,
-    saveUninitialized: false
-  })
-);
 
 if (!isProduction) {
   app.use(errorhandler());
@@ -63,7 +55,6 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// error handlers
 
 // development error handler
 // will print stacktrace

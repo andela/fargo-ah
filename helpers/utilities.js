@@ -1,9 +1,10 @@
 import { } from 'dotenv/config';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import mailer from 'nodemailer';
-import stubTransport from 'nodemailer-stub-transport';
+// import mailer from 'nodemailer';
+// import stubTransport from 'nodemailer-stub-transport';
 import { User } from '../models';
+import { sendMailReset } from './sendEmail';
 
 /**
  *  Class representing all utility functions
@@ -46,6 +47,8 @@ export default class Utilities {
     } else {
       output = {
         success: true,
+        message: `You've successfully registered! A verification email has been sent to you,
+       please click the verification link to continue`,
         user: {
           email: userObject.email,
           token,
@@ -60,45 +63,55 @@ export default class Utilities {
     return output;
   }
 
-  /**
-  * @callback next
-  * @param {Object} req - Request object
-  * @param {Object} res - Response object
-  * @param {next} next - next route handler
-  * @returns {Object} success or failure response
-  */
-  static sendEmail(req, res, next) {
-    let transport;
-    const mailOptions = {
-      from: process.env.fromEmailAdd,
-      to: req.body.user.email,
-      subject: 'Password reset Authors-Haven.com',
-      html: `<h3 style="color: blue;">Author's Haven</h3><p>Hello ${req.body.user.username},</p><p> You can reset your password by clicking this <a href='${req.protocol}://${req.headers.host}/api/users/password/reset/edit?token=${req.body.token}'>link</a>. You received this email because you requested for password reset</p>
-      <div style="text-align: center; background: aliceblue;"> <h5 style="padding: 10px;color: blue">Author's Haven &copy;2018</h5></div>`
-    };
-    if (process.env.NODE_ENV === 'TEST' || process.env.NODE_ENV === 'test') {
-      transport = mailer.createTransport(stubTransport());
-    } else {
-      transport = mailer.createTransport({
-        host: 'smtp.gmail.com',
-        secure: true,
-        port: 465,
-        auth: {
-          user: process.env.emailAdd,
-          pass: process.env.emailPassword,
-        },
-        transportMethod: 'SMTP',
-        tls: {
-          rejectUnauthorized: false
-        }
-      });
-    }
-    transport.sendMail(mailOptions, (error) => {
-      if (error) {
-        return next(error.message);
-      }
+  // /**
+  // * @callback next
+  // * @param {Object} req - Request object
+  // * @param {Object} res - Response object
+  // * @param {next} next - next route handler
+  // * @returns {Object} success or failure response
+  // */
+  // static sendEmail(req, res, next) {
+  //   let transport;
+  //   const mailOptions = {
+  //     from: process.env.fromEmailAdd,
+  //     to: req.body.user.email,
+  //     subject: 'Password reset Authors-Haven.com',
+  //     html: `<h3 style="color: blue;">Author's Haven</h3><p>Hello ${req.body.user.username},</p><p> You can reset your password by clicking this <a href='${process.env.FRONT_END_RESET}/password/reset/edit?token=${req.body.token}'>link</a>. You received this email because you requested for password reset</p>
+  //     <div style="text-align: center; background: aliceblue;"> <h5 style="padding: 10px;color: blue">Author's Haven &copy;2018</h5></div>`
+  //   };
+  //   if (process.env.NODE_ENV === 'TEST' || process.env.NODE_ENV === 'test') {
+  //     transport = mailer.createTransport(stubTransport());
+  //   } else {
+  //     transport = mailer.createTransport({
+  //       host: 'smtp.gmail.com',
+  //       secure: true,
+  //       port: 465,
+  //       auth: {
+  //         user: process.env.emailAdd,
+  //         pass: process.env.emailPassword,
+  //       },
+  //       transportMethod: 'SMTP',
+  //       tls: {
+  //         rejectUnauthorized: false
+  //       }
+  //     });
+  //   }
+  //   transport.sendMail(mailOptions, (error) => {
+  //     if (error) {
+  //       return next(error.message);
+  //     }
+  //     res.status(200).json({ message: 'Email sent successfully' });
+  //   });
+  // }
+
+  /* eslint-disable */
+  static sendmail(req, res, next) {
+    console.log('got here sendemail', req.body.user.email);
+    if(req.body.user.email) {
+      sendMailReset([req.body.user.email], req.body.user.username, req.body.token);
       res.status(200).json({ message: 'Email sent successfully' });
-    });
+    }
+    
   }
 
   /**
